@@ -1,4 +1,8 @@
+// server/src/bin/server.rs
+
+// dependencies
 use anyhow::Context;
+use app::configuration::{StaticServer, TemplateEngine};
 use pavex::config::ConfigLoader;
 use pavex::server::{Server, ServerHandle, ShutdownMode};
 use server::{
@@ -39,7 +43,11 @@ async fn _main() -> anyhow::Result<()> {
     let server_builder = Server::new().listen(tcp_listener);
     let shutdown_timeout = config.server.graceful_shutdown_timeout;
 
-    let application_state = ApplicationState::new(config)
+    // build the template engine and static server
+    let template_engine = TemplateEngine::from_config(&config.templateconfig)?;
+    let static_server = StaticServer::from_config(config.staticserverconfig.clone());
+
+    let application_state = ApplicationState::new(config, template_engine, static_server)
         .await
         .context("Failed to build the application state")?;
 

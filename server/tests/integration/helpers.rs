@@ -1,3 +1,7 @@
+// server/tests/integration/helpers.rs
+
+// dependencies
+use app::configuration::{StaticServer, TemplateEngine};
 use pavex::{config::ConfigLoader, server::Server};
 use server::configuration::Profile;
 use server_sdk::{ApplicationConfig, ApplicationState, run};
@@ -26,7 +30,11 @@ impl TestApi {
         let server_builder = Server::new().listen(tcp_listener);
         let api_address = format!("http://{}:{}", config.server.ip, address.port());
 
-        let application_state = ApplicationState::new(config)
+        // build the template engine and static server with proper error handling
+        let template_engine = TemplateEngine::from_config(&config.templateconfig).unwrap();
+        let static_server = StaticServer::from_config(config.staticserverconfig.clone());
+
+        let application_state = ApplicationState::new(config, template_engine, static_server)
             .await
             .expect("Failed to build the application state");
 

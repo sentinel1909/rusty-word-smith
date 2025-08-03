@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.0"
+version.workspace = true
 edition.workspace = true
 
 [[bin]]
@@ -20,8 +20,27 @@ humantime-serde = "1.1"
 pavex = { version = "0.2.2" }
 pavex_tracing = { version = "0.2.2" }
 pavex_cli_client = { version = "0.2.2" }
+pavex_static_files = { git = "https://github.com/sentinel1909/pavex_static_files.git", rev = "5ced7ab" }
+pavex_tera_template = { git = "https://github.com/sentinel1909/pavex_tera_template.git", features = [
+    "serde",
+], rev = "1fa1136" }
+serde_json = "1.0.142"
+thiserror = "2.0.12"
 tracing = "0.1"
+tracing-log = "0.2.0"
 tracing_log_error = "0.1"
+secrecy = { version = "0.10.3", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
 serde-aux = "4"
+sqlx = { version = "0.8.4", features = [
+    "runtime-tokio",
+    "tls-rustls",
+    "migrate",
+    "uuid",
+    "macros",
+    "time",
+    "postgres",
+] }
 workspace_hack = { path = "../workspace_hack" }
+
+

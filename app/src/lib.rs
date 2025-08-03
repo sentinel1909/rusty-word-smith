@@ -1,9 +1,11 @@
-// If a module defines a component (e.g. a route or a middleware or a constructor), it must be
-// public. Those components must be importable from the `server_sdk` crate, therefore they must
-// be accessible from outside this crate.
+// app/src/lib.rs
+
+// modules
 mod blueprint;
 pub mod configuration;
+pub mod errors;
 pub mod routes;
 pub mod telemetry;
 
+// re-export the blueprint
 pub use blueprint::blueprint;
