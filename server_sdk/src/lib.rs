@@ -69,9 +69,9 @@ impl Router {
     }
     fn router() -> matchit::Router<u32> {
         let mut router = matchit::Router::new();
-        router.insert("/api/", 0u32).unwrap();
-        router.insert("/api/ping", 1u32).unwrap();
-        router.insert("/api/static/{path}", 2u32).unwrap();
+        router.insert("/", 0u32).unwrap();
+        router.insert("/ping", 1u32).unwrap();
+        router.insert("/static/{path}", 2u32).unwrap();
         router
     }
     pub async fn route(
@@ -103,7 +103,7 @@ impl Router {
                 match &request_head.method {
                     &pavex::http::Method::GET => {
                         let matched_route_template = pavex::request::path::MatchedPathPattern::new(
-                            "/api/",
+                            "/",
                         );
                         route_1::entrypoint(
                                 matched_route_template,
@@ -118,7 +118,7 @@ impl Router {
                             ])
                             .into();
                         let matched_route_template = pavex::request::path::MatchedPathPattern::new(
-                            "/api/",
+                            "/",
                         );
                         route_0::entrypoint(
                                 matched_route_template,
@@ -133,7 +133,7 @@ impl Router {
                 match &request_head.method {
                     &pavex::http::Method::GET => {
                         let matched_route_template = pavex::request::path::MatchedPathPattern::new(
-                            "/api/ping",
+                            "/ping",
                         );
                         route_2::entrypoint(matched_route_template, &request_head).await
                     }
@@ -143,7 +143,7 @@ impl Router {
                             ])
                             .into();
                         let matched_route_template = pavex::request::path::MatchedPathPattern::new(
-                            "/api/ping",
+                            "/ping",
                         );
                         route_0::entrypoint(
                                 matched_route_template,
@@ -158,7 +158,7 @@ impl Router {
                 match &request_head.method {
                     &pavex::http::Method::GET => {
                         let matched_route_template = pavex::request::path::MatchedPathPattern::new(
-                            "/api/static/{path}",
+                            "/static/{path}",
                         );
                         route_3::entrypoint(
                                 matched_route_template,
@@ -173,7 +173,7 @@ impl Router {
                             ])
                             .into();
                         let matched_route_template = pavex::request::path::MatchedPathPattern::new(
-                            "/api/static/{path}",
+                            "/static/{path}",
                         );
                         route_0::entrypoint(
                                 matched_route_template,

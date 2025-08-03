@@ -16,6 +16,6 @@ pub fn blueprint() -> Blueprint {
 
     telemetry::instrument(&mut bp);
 
-    bp.prefix("/api").routes(from![crate]);
+    bp.routes(from![crate]);
     bp
 }
