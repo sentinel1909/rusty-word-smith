@@ -1,6 +1,18 @@
-/target
-/test_data
+# gitignore config for Rusty Word Smith
+
+# ignore all files in the .cursor directory
+.cursor/
+
+# environment variables
 .env
-.cursor
 Secrets*.toml
+.shuttle*
+
+# build artifacts
+/target
+
+# test data
+/test_data
+
+# macOS
 .DS_Store
