@@ -1,0 +1,18 @@
+# Shuttle.toml
+name = "rust-word-smith-org"
+
+[deploy]
+include = [
+    "configuration/base.yml",
+    "configuration/prod.yml",
+    "templates/*",
+    "static/*"
+]
+
+[build]
+assets = [
+    "configuration/base.yml",
+    "configuration/prod.yml",
+    "templates/*",
+    "static/*"
+]

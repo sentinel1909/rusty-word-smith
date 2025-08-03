@@ -1,5 +1,5 @@
 [workspace]
-members = ["app", "server_sdk", "server", "workspace_hack"]
+members = ["app", "server_sdk", "server", "workspace_hack", "shuttle"]
 # By setting `server` as the default member, `cargo run` will default to running the server binary
 # when executed from the root of the workspace.
 # Otherwise, you would have to use `cargo run --bin server` to run the server binary.
@@ -8,4 +8,4 @@ resolver = "3"
 
 [workspace.package]
 edition = "2024"
-version = "0.2.2"
+version = "0.3.0"
