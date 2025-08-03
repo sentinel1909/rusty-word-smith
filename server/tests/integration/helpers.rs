@@ -17,8 +17,13 @@ pub struct TestApi {
 impl TestApi {
     pub async fn spawn() -> Self {
         Self::init_telemetry();
-        let config = Self::get_config();
+        
+        let config = Self::get_config_with_absolute_paths();
+        
+        Self::spawn_with_config(config).await
+    }
 
+    async fn spawn_with_config(config: ApplicationConfig) -> Self {
         let tcp_listener = config
             .server
             .listener()
@@ -31,7 +36,8 @@ impl TestApi {
         let api_address = format!("http://{}:{}", config.server.ip, address.port());
 
         // build the template engine and static server with proper error handling
-        let template_engine = TemplateEngine::from_config(&config.templateconfig).unwrap();
+        let template_engine = TemplateEngine::from_config(&config.templateconfig)
+            .expect("Failed to build template engine");
         let static_server = StaticServer::from_config(config.staticserverconfig.clone());
 
         let application_state = ApplicationState::new(config, template_engine, static_server)
@@ -40,25 +46,38 @@ impl TestApi {
 
         tokio::spawn(async move { run(server_builder, application_state).await });
 
-        TestApi {
+                TestApi {
             api_address,
             api_client: reqwest::Client::new(),
         }
     }
 
-    /// Load the dev configuration and tweak it to ensure that tests are
-    /// properly isolated from each other.
-    fn get_config() -> ApplicationConfig {
+
+
+    /// Load the test configuration with absolute paths to avoid working directory issues.
+    fn get_config_with_absolute_paths() -> ApplicationConfig {
+        let workspace_root = std::env::current_dir()
+            .expect("Failed to get current directory")
+            .join("..")
+            .canonicalize()
+            .expect("Failed to canonicalize workspace root path");
+        
         let mut config: ApplicationConfig = ConfigLoader::new()
-            .profile(Profile::Dev)
+            .profile(Profile::Test)
             .load()
             .expect("Failed to load test configuration");
-        // We use port `0` to get the operating system to assign us a random port.
-        // This lets us run tests in parallel without running into "port X is already in use"
-        // errors.
-        config.server.port = 0;
+        
+        // Override the paths with absolute paths for testing
+        let template_dir = workspace_root.join("test_data/templates").to_string_lossy().to_string();
+        let static_dir = workspace_root.join("test_data/static");
+        
+        config.templateconfig.dir = template_dir.into();
+        config.staticserverconfig.root_dir = static_dir;
+        
         config
     }
+
+
 
     fn init_telemetry() {
         // Initialize the telemetry setup at most once.
@@ -83,9 +102,29 @@ impl TestApi {
 impl TestApi {
     pub async fn get_ping(&self) -> reqwest::Response {
         self.api_client
-            .get(&format!("{}/api/ping", &self.api_address))
+            .get(&format!("{}/ping", &self.api_address))
             .send()
             .await
             .expect("Failed to execute request.")
     }
+
+    pub async fn get_index(&self) -> reqwest::Response {
+        self.api_client
+            .get(&format!("{}/", &self.api_address))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_static_file(&self, filename: &str) -> reqwest::Response {
+        self.api_client
+            .get(&format!("{}/static/{}", &self.api_address, filename))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+
+
+
 }

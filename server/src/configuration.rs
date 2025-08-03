@@ -30,4 +30,11 @@ pub enum Profile {
     /// Sensitive configuration values for production should be injected at runtime
     /// according to the specifics of your deployment target (e.g. via environment variables).
     Prod,
+    /// Test profile.
+    ///
+    /// This is the profile used for integration tests.
+    /// It uses test-specific data directories to avoid conflicts with real application data.
+    ///
+    /// The corresponding configuration file is `test.yml`.
+    Test,
 }

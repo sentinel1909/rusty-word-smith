@@ -1,0 +1,14 @@
+# Test configuration for integration tests
+server:
+  ip: "127.0.0.1"
+  port: 0  # Use port 0 for random assignment in tests
+
+templateconfig:
+  dir: test_data/templates
+  pattern: "**/*"
+  extra_templates: []
+
+staticserverconfig:
+  mount_path: "/static"
+  root_dir: "test_data/static"
+  serve_index: false 

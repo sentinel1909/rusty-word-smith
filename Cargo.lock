@@ -2561,6 +2561,7 @@ dependencies = [
  "dotenvy",
  "pavex",
  "reqwest",
+ "serde_json",
  "server_sdk",
  "tokio",
  "tracing",
