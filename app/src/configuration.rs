@@ -76,7 +76,6 @@ pub struct DatabaseConfig {
     pub require_ssl: bool,
 }
 
-
 // methods for the database configuration type
 #[methods]
 impl DatabaseConfig {

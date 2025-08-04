@@ -15,6 +15,8 @@ name = "bp"
 unexpected_cfgs = { level = "allow", check-cfg = ['cfg(pavex_ide_hint)'] }
 
 [dependencies]
+argon2 = "0.5.3"
+async-trait = "0.1.88"
 cargo_px_env = "0.1"
 humantime-serde = "1.1"
 pavex = { version = "0.2.2" }
@@ -26,11 +28,8 @@ pavex_static_files = { git = "https://github.com/sentinel1909/pavex_static_files
 pavex_tera_template = { git = "https://github.com/sentinel1909/pavex_tera_template.git", features = [
     "serde",
 ], rev = "1fa1136" }
+regex = "1.11.1"
 serde_json = "1.0.142"
-thiserror = "2.0.12"
-tracing = "0.1"
-tracing-log = "0.2.0"
-tracing_log_error = "0.1"
 secrecy = { version = "0.10.3", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
 serde-aux = "4"
@@ -43,6 +42,13 @@ sqlx = { version = "0.8.4", features = [
     "time",
     "postgres",
 ] }
+thiserror = "2.0.12"
+tracing = "0.1"
+tracing-log = "0.2.0"
+tracing_log_error = "0.1"
 workspace_hack = { path = "../workspace_hack" }
+uuid = "1.17.0"
+validator = { version = "0.20.0", features = ["derive"] }
+
 
 

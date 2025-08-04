@@ -2,7 +2,13 @@
 
 // dependencies
 use pavex::http::{HeaderValue, StatusCode};
-use pavex::{Response, error_handler, response::body::{TypedBody, raw::{Bytes, Full}}};
+use pavex::{
+    Response, error_handler,
+    response::body::{
+        TypedBody,
+        raw::{Bytes, Full},
+    },
+};
 use pavex_static_files::ServeError;
 use pavex_tera_template::TemplateError;
 use serde::Serialize;
