@@ -7,6 +7,7 @@ use server::configuration::Profile::{Dev, Prod};
 use server::telemetry::{get_subscriber, init_telemetry};
 use server_sdk::{ApplicationConfig, ApplicationState};
 use shuttle_runtime::{CustomError, SecretStore};
+use sqlx::PgPool;
 
 // setup the telemetry
 pub fn setup_telemetry() -> Result<(), CustomError> {
@@ -17,6 +18,18 @@ pub fn setup_telemetry() -> Result<(), CustomError> {
     );
     init_telemetry(subscriber)?;
     Ok(())
+}
+
+// run the database migrations
+pub async fn run_migrations(db_pool: &PgPool) -> Result<(), CustomError> {
+    tracing::info!("Running database migrations...");
+    sqlx::migrate!("./migrations")
+        .run(db_pool)
+        .await
+        .map_err(|err| {
+            let msg = format!("Unable to run the database migrations: {err}");
+            CustomError::new(err).context(msg)
+        })
 }
 
 // determine the application profile
@@ -71,8 +84,9 @@ pub async fn build_application_state(
     app_config: ApplicationConfig,
     template_engine: TemplateEngine,
     static_server: StaticServer,
+    db_pool: PgPool,
 ) -> Result<ApplicationState, CustomError> {
-    let app_state = ApplicationState::new(app_config, template_engine, static_server)
+    let app_state = ApplicationState::new(app_config, template_engine, static_server, db_pool)
         .await
         .map_err(|err| {
             let error_msg = format!("Unable to build the application state: {err}");

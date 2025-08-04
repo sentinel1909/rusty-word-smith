@@ -11,10 +11,14 @@ async fn index_page_renders_correctly() {
     let api = TestApi::spawn().await;
 
     let response = api.get_index().await;
-
-    assert_eq!(response.status(), StatusCode::OK);
-    
+    let status = response.status();
     let body = response.text().await.expect("Failed to get response body");
+    
+    if status != StatusCode::OK {
+        println!("Response status: {}", status);
+        println!("Response body: {}", body);
+        panic!("Expected OK status but got {}", status);
+    }
     
     // Check that the template rendered correctly
     assert!(body.contains("Test Blog"));

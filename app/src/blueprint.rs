@@ -1,5 +1,6 @@
 use crate::telemetry;
-use pavex::{Blueprint, blueprint::from};
+use pavex::{Blueprint, blueprint::from, cookie::INJECT_RESPONSE_COOKIES};
+use pavex_session::FINALIZE_SESSION;
 
 /// The main blueprint, defining all the components used in this API.
 pub fn blueprint() -> Blueprint {
@@ -12,7 +13,15 @@ pub fn blueprint() -> Blueprint {
         // Components defined in the `pavex` crate,
         // by the framework itself.
         pavex,
+        pavex_session,
+        pavex_session_sqlx::postgres,
     ]);
+
+    // Add the session middleware to the blueprint
+    bp.post_process(FINALIZE_SESSION);
+
+    // Add the cookie middleware to the blueprint
+    bp.post_process(INJECT_RESPONSE_COOKIES);
 
     telemetry::instrument(&mut bp);
 

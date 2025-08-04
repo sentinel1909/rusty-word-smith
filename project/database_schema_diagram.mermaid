@@ -1,0 +1,215 @@
+erDiagram
+    users ||--o{ posts : "authors"
+    users ||--o{ pages : "authors"
+    users ||--o{ comments : "can_author"
+    users ||--o{ media : "uploads"
+    users ||--o{ revisions : "creates"
+    
+    posts ||--o{ post_categories : "belongs_to"
+    categories ||--o{ post_categories : "contains"
+    
+    posts ||--o{ post_tags : "tagged_with"
+    tags ||--o{ post_tags : "applied_to"
+    
+    posts ||--o{ post_media : "has_attachments"
+    media ||--o{ post_media : "attached_to"
+    
+    pages ||--o{ page_media : "has_attachments"
+    media ||--o{ page_media : "attached_to"
+    
+    posts ||--o{ comments : "receives"
+    pages ||--o{ comments : "receives"
+    comments ||--o{ comments : "replies_to"
+    
+    posts ||--o{ revisions : "has_history"
+    pages ||--o{ revisions : "has_history"
+    
+    categories ||--o{ categories : "parent_child"
+    pages ||--o{ pages : "parent_child"
+    
+    users {
+        uuid id PK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        varchar display_name
+        text bio
+        varchar avatar_url
+        varchar role
+        boolean is_active
+        boolean email_verified
+        varchar email_verification_token
+        timestamptz email_verification_expires_at
+        varchar password_reset_token
+        timestamptz password_reset_expires_at
+        varchar social_twitter
+        varchar social_facebook
+        varchar social_linkedin
+        varchar social_instagram
+        varchar social_youtube
+        varchar social_github
+        varchar website_url
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    posts {
+        uuid id PK
+        varchar title
+        varchar slug UK
+        text content
+        text excerpt
+        varchar featured_image_url
+        uuid author_id FK
+        varchar status
+        varchar password
+        varchar comment_status
+        boolean is_featured
+        integer view_count
+        varchar meta_title
+        text meta_description
+        text meta_keywords
+        varchar canonical_url
+        varchar og_title
+        text og_description
+        varchar og_image
+        varchar twitter_title
+        text twitter_description
+        varchar twitter_image
+        timestamptz published_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    pages {
+        uuid id PK
+        varchar title
+        varchar slug UK
+        text content
+        text excerpt
+        varchar featured_image_url
+        uuid author_id FK
+        varchar status
+        varchar password
+        varchar comment_status
+        uuid parent_id FK
+        integer menu_order
+        varchar template
+        boolean is_homepage
+        integer view_count
+        varchar meta_title
+        text meta_description
+        text meta_keywords
+        varchar canonical_url
+        varchar og_title
+        text og_description
+        varchar og_image
+        varchar twitter_title
+        text twitter_description
+        varchar twitter_image
+        timestamptz published_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    categories {
+        uuid id PK
+        varchar name UK
+        varchar slug UK
+        text description
+        uuid parent_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    tags {
+        uuid id PK
+        varchar name UK
+        varchar slug UK
+        text description
+        timestamptz created_at
+    }
+    
+    media {
+        uuid id PK
+        varchar filename
+        varchar original_filename
+        varchar file_path
+        varchar file_url
+        varchar mime_type
+        bigint file_size
+        integer width
+        integer height
+        text alt_text
+        text caption
+        text description
+        uuid uploaded_by FK
+        boolean is_featured
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    comments {
+        uuid id PK
+        uuid post_id FK
+        uuid page_id FK
+        uuid parent_id FK
+        varchar author_name
+        varchar author_email
+        varchar author_url
+        varchar author_fingerprint
+        text user_agent
+        text content
+        varchar status
+        uuid user_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    revisions {
+        uuid id PK
+        varchar entity_type
+        uuid entity_id
+        varchar title
+        text content
+        text excerpt
+        uuid author_id FK
+        text revision_note
+        timestamptz created_at
+    }
+    
+    metadata {
+        uuid id PK
+        varchar entity_type
+        uuid entity_id
+        varchar meta_key
+        text meta_value
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    post_categories {
+        uuid post_id FK
+        uuid category_id FK
+        timestamptz created_at
+    }
+    
+    post_tags {
+        uuid post_id FK
+        uuid tag_id FK
+        timestamptz created_at
+    }
+    
+    post_media {
+        uuid post_id FK
+        uuid media_id FK
+        integer display_order
+        timestamptz created_at
+    }
+    
+    page_media {
+        uuid page_id FK
+        uuid media_id FK
+        integer display_order
+        timestamptz created_at
+    }

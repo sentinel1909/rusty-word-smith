@@ -1,7 +1,7 @@
 // server/tests/integration/helpers.rs
 
 // dependencies
-use app::configuration::{StaticServer, TemplateEngine};
+use app::configuration::{DatabaseConfig, StaticServer, TemplateEngine};
 use pavex::{config::ConfigLoader, server::Server};
 use server::configuration::Profile;
 use server_sdk::{ApplicationConfig, ApplicationState, run};
@@ -39,8 +39,9 @@ impl TestApi {
         let template_engine = TemplateEngine::from_config(&config.templateconfig)
             .expect("Failed to build template engine");
         let static_server = StaticServer::from_config(config.staticserverconfig.clone());
+        let db_pool = DatabaseConfig::get_database_pool(&config.databaseconfig).await;
 
-        let application_state = ApplicationState::new(config, template_engine, static_server)
+        let application_state = ApplicationState::new(config, template_engine, static_server, db_pool)
             .await
             .expect("Failed to build the application state");
 
@@ -54,25 +55,17 @@ impl TestApi {
 
 
 
-    /// Load the test configuration with absolute paths to avoid working directory issues.
+    /// Load the test configuration with relative paths for cross-platform compatibility.
     fn get_config_with_absolute_paths() -> ApplicationConfig {
-        let workspace_root = std::env::current_dir()
-            .expect("Failed to get current directory")
-            .join("..")
-            .canonicalize()
-            .expect("Failed to canonicalize workspace root path");
-        
-        let mut config: ApplicationConfig = ConfigLoader::new()
+        let config: ApplicationConfig = ConfigLoader::new()
             .profile(Profile::Test)
             .load()
             .expect("Failed to load test configuration");
         
-        // Override the paths with absolute paths for testing
-        let template_dir = workspace_root.join("test_data/templates").to_string_lossy().to_string();
-        let static_dir = workspace_root.join("test_data/static");
-        
-        config.templateconfig.dir = template_dir.into();
-        config.staticserverconfig.root_dir = static_dir;
+        // Debug: Print the template directory path and current directory
+        println!("Current directory: {:?}", std::env::current_dir().unwrap());
+        println!("Template directory: {}", config.templateconfig.dir);
+        println!("Static directory: {:?}", config.staticserverconfig.root_dir);
         
         config
     }
