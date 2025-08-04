@@ -15,7 +15,7 @@ mod tests {
         users: Arc<Mutex<HashMap<Uuid, User>>>,
         users_by_username: Arc<Mutex<HashMap<String, Uuid>>>,
         users_by_email: Arc<Mutex<HashMap<String, Uuid>>>,
-        password_verifications: Arc<Mutex<HashMap<Uuid, String>>>, // user_id -> password_hash
+        password_verifications: Arc<Mutex<HashMap<Uuid, String>>>,
     }
 
     impl MockUserRepository {

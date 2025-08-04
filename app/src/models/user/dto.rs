@@ -1,8 +1,9 @@
 // app/src/models/user/dto.rs
 
 // dependencies
+use crate::errors::ApiError;
 use super::{User, UserRole};
-use pavex::time::Timestamp;
+use pavex::{IntoResponse, Response, time::Timestamp};
 use serde::{Deserialize, Serialize};
 use std::sync::LazyLock;
 use uuid::Uuid;
@@ -134,6 +135,16 @@ impl From<User> for UserSummary {
             display_name: user.display_name,
             avatar_url: user.avatar_url,
             role: user.role,
+        }
+    }
+}
+
+// implement the IntoResponse trait for UserResponse
+impl IntoResponse for UserResponse {
+    fn into_response(self) -> Response {
+        match serde_json::to_string(&self) {
+            Ok(body) => Response::ok().set_typed_body(body),
+            Err(err) => crate::errors::api_error2response(&ApiError::SerializationError(err)),
         }
     }
 }

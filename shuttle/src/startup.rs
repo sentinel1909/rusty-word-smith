@@ -86,7 +86,7 @@ pub async fn build_application_state(
     static_server: StaticServer,
     db_pool: PgPool,
 ) -> Result<ApplicationState, CustomError> {
-    let app_state = ApplicationState::new(app_config, template_engine, static_server, db_pool)
+    let app_state = ApplicationState::new(app_config, db_pool, template_engine, static_server)
         .await
         .map_err(|err| {
             let error_msg = format!("Unable to build the application state: {err}");

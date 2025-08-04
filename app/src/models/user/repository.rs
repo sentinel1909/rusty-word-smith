@@ -68,9 +68,7 @@ impl SqlxUserRepository {
 
     /// Helper function to map database row to User struct
     fn map_row_to_user(row: sqlx::postgres::PgRow) -> Result<User, UserError> {
-        let role_str: String = row.get("role");
-        let role = UserRole::from_str(&role_str).unwrap_or_default();
-
+       let role: UserRole = row.get("role");
         Ok(User {
             id: row.get("id"),
             username: row.get("username"),
@@ -96,11 +94,11 @@ impl SqlxUserRepository {
             created_at: row
                 .get::<String, _>("created_at")
                 .parse::<Timestamp>()
-                .unwrap_or_default(),
+                .unwrap_or_else(|_| Timestamp::now()),
             updated_at: row
                 .get::<String, _>("updated_at")
                 .parse::<Timestamp>()
-                .unwrap_or_default(),
+                .unwrap_or_else(|_| Timestamp::now()),
         })
     }
 }
