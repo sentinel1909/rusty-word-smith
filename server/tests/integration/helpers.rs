@@ -55,13 +55,26 @@ impl TestApi {
 
 
 
-    /// Load the test configuration with relative paths for cross-platform compatibility.
+    /// Load the test configuration with absolute paths for cross-platform compatibility.
     fn get_config_with_absolute_paths() -> ApplicationConfig {
-        let config: ApplicationConfig = ConfigLoader::new()
+        let workspace_root = std::env::current_dir()
+            .expect("Failed to get current directory")
+            .join("..")
+            .canonicalize()
+            .expect("Failed to canonicalize workspace root path");
+
+        let mut config: ApplicationConfig = ConfigLoader::new()
             .profile(Profile::Test)
             .load()
             .expect("Failed to load test configuration");
-        
+
+        // Override the paths with absolute paths for testing
+        let template_dir = workspace_root.join("test_data/templates").to_string_lossy().to_string();
+        let static_dir = workspace_root.join("test_data/static");
+
+        config.templateconfig.dir = template_dir.into();
+        config.staticserverconfig.root_dir = static_dir;
+
         // Debug: Print the template directory path and current directory
         println!("Current directory: {:?}", std::env::current_dir().unwrap());
         println!("Template directory: {}", config.templateconfig.dir);

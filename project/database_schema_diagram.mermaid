@@ -27,6 +27,14 @@ erDiagram
     categories ||--o{ categories : "parent_child"
     pages ||--o{ pages : "parent_child"
     
+    plugins ||--o{ plugin_hooks : "registers"
+    plugins ||--o{ custom_post_types : "defines"
+    plugins ||--o{ plugin_pages : "creates"
+    plugins ||--o{ shortcodes : "provides"
+    plugins ||--o{ plugin_capabilities : "grants"
+    
+    custom_post_types ||--o{ posts : "extends"
+    
     users {
         uuid id PK
         varchar username UK
@@ -66,6 +74,8 @@ erDiagram
         varchar comment_status
         boolean is_featured
         integer view_count
+        varchar post_type
+        jsonb custom_fields
         varchar meta_title
         text meta_description
         text meta_keywords
@@ -186,6 +196,83 @@ erDiagram
         text meta_value
         timestamptz created_at
         timestamptz updated_at
+    }
+    
+    plugins {
+        uuid id PK
+        varchar name UK
+        varchar slug UK
+        varchar version
+        text description
+        varchar author
+        varchar author_url
+        varchar plugin_url
+        boolean is_active
+        boolean auto_update
+        jsonb settings
+        timestamptz installed_at
+        timestamptz updated_at
+    }
+    
+    plugin_hooks {
+        uuid id PK
+        varchar plugin_slug FK
+        varchar hook_name
+        varchar callback_function
+        integer priority
+        boolean is_active
+        timestamptz created_at
+    }
+    
+    custom_post_types {
+        uuid id PK
+        varchar name UK
+        varchar label
+        text description
+        varchar plugin_slug FK
+        boolean is_public
+        boolean supports_comments
+        boolean supports_media
+        varchar menu_icon
+        integer menu_position
+        jsonb settings
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    
+    plugin_pages {
+        uuid id PK
+        varchar plugin_slug FK
+        varchar page_title
+        varchar menu_title
+        varchar slug
+        varchar parent_slug
+        varchar capability
+        varchar icon
+        integer position
+        varchar template_path
+        boolean is_active
+        timestamptz created_at
+    }
+    
+    shortcodes {
+        uuid id PK
+        varchar plugin_slug FK
+        varchar tag UK
+        varchar handler_function
+        text description
+        text example_usage
+        boolean is_active
+        timestamptz created_at
+    }
+    
+    plugin_capabilities {
+        uuid id PK
+        varchar plugin_slug FK
+        varchar capability
+        text description
+        text[] default_roles
+        timestamptz created_at
     }
     
     post_categories {
