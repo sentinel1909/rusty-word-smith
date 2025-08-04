@@ -7,6 +7,9 @@ mod error;
 mod repository;
 mod service;
 
+#[cfg(test)]
+mod tests;
+
 // re-export the modules
 pub use dto::*;
 pub use entity::*;

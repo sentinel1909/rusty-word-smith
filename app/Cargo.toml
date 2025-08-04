@@ -50,5 +50,7 @@ workspace_hack = { path = "../workspace_hack" }
 uuid = "1.17.0"
 validator = { version = "0.20.0", features = ["derive"] }
 
-
+[dev-dependencies]
+tokio = { version = "1.40.0", features = ["rt-multi-thread"] }
+tokio-test = "0.4.0"
 

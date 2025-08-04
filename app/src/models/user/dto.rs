@@ -9,7 +9,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 /// Request DTO for user registration
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Clone,Debug, Deserialize, Validate)]
 pub struct CreateUserRequest {
     #[validate(length(min = 3, max = 50, message = "Username must be 3-50 characters"))]
     #[validate(regex(
@@ -82,7 +82,7 @@ pub struct UserSummary {
 }
 
 /// Login request DTO
-#[derive(Debug, Deserialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Validate)]
 pub struct LoginRequest {
     #[validate(length(min = 1, message = "Username or email is required"))]
     pub username_or_email: String,
