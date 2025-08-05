@@ -39,9 +39,9 @@ impl TestApi {
         let template_engine = TemplateEngine::from_config(&config.templateconfig)
             .expect("Failed to build template engine");
         let static_server = StaticServer::from_config(config.staticserverconfig.clone());
-        let db_pool = DatabaseConfig::get_database_pool(&config.databaseconfig).await;
+        let db_pool = config.databaseconfig.get_database_pool().await;
 
-        let application_state = ApplicationState::new(config, template_engine, static_server, db_pool)
+        let application_state = ApplicationState::new(config, db_pool, template_engine, static_server)
             .await
             .expect("Failed to build the application state");
 

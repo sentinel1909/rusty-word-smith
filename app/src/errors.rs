@@ -2,7 +2,13 @@
 
 // dependencies
 use pavex::http::{HeaderValue, StatusCode};
-use pavex::{Response, error_handler, response::body::{TypedBody, raw::{Bytes, Full}}};
+use pavex::{
+    Response, error_handler,
+    response::body::{
+        TypedBody,
+        raw::{Bytes, Full},
+    },
+};
 use pavex_static_files::ServeError;
 use pavex_tera_template::TemplateError;
 use serde::Serialize;
@@ -16,6 +22,12 @@ pub enum ApiError {
 
     #[error("Static file error: {0}")]
     StaticFileError(#[from] ServeError),
+
+    #[error("Serialization error: {0}")]
+    SerializationError(#[from] serde_json::Error),
+
+    #[error("User error: {0}")]
+    UserError(#[from] crate::models::UserError),
 }
 
 #[derive(Serialize)]
@@ -54,6 +66,14 @@ pub fn api_error2response(error: &ApiError) -> Response {
                 StatusCode::INTERNAL_SERVER_ERROR
             }
         }
+        ApiError::SerializationError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        ApiError::UserError(user_error) => match user_error {
+            crate::models::UserError::Validation { .. } => StatusCode::BAD_REQUEST,
+            crate::models::UserError::UserNotFound => StatusCode::NOT_FOUND,
+            crate::models::UserError::EmailExists | crate::models::UserError::UsernameExists => StatusCode::CONFLICT,
+            crate::models::UserError::InvalidCredentials => StatusCode::UNAUTHORIZED,
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
+        },
     };
 
     let payload = ApiErrorResponse {

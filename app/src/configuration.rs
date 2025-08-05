@@ -7,6 +7,7 @@ use secrecy::{ExposeSecret, SecretString};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::ConnectOptions;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions, PgSslMode};
+use std::sync::Arc;
 
 // server configuration
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -76,7 +77,6 @@ pub struct DatabaseConfig {
     pub require_ssl: bool,
 }
 
-
 // methods for the database configuration type
 #[methods]
 impl DatabaseConfig {
@@ -103,9 +103,15 @@ impl DatabaseConfig {
     }
 
     pub async fn get_database_pool(&self) -> PgPool {
-        PgPoolOptions::new()
+        let pool = PgPoolOptions::new()
             .acquire_timeout(std::time::Duration::from_secs(2))
-            .connect_lazy_with(self.with_db())
+            .connect_lazy_with(self.with_db());
+        pool
+    }
+
+    pub async fn get_shared_database_pool(&self) -> Arc<PgPool> {
+        let pool = self.get_database_pool().await;
+        Arc::new(pool)
     }
 }
 
