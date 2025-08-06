@@ -2,8 +2,8 @@
 
 #[cfg(test)]
 mod tests {
-    use async_trait::async_trait;
     use crate::models::user::*;
+    use async_trait::async_trait;
     use pavex::time::Timestamp;
     use std::collections::HashMap;
     use std::sync::{Arc, Mutex};
@@ -32,7 +32,7 @@ mod tests {
             let mut users = self.users.lock().unwrap();
             let mut by_username = self.users_by_username.lock().unwrap();
             let mut by_email = self.users_by_email.lock().unwrap();
-            
+
             by_username.insert(user.username.clone(), user.id);
             by_email.insert(user.email.clone(), user.id);
             users.insert(user.id, user);
@@ -99,7 +99,7 @@ mod tests {
         async fn find_by_username(&self, username: &str) -> Result<Option<User>, UserError> {
             let by_username = self.users_by_username.lock().unwrap();
             let users = self.users.lock().unwrap();
-            
+
             if let Some(user_id) = by_username.get(username) {
                 Ok(users.get(user_id).cloned())
             } else {
@@ -110,7 +110,7 @@ mod tests {
         async fn find_by_email(&self, email: &str) -> Result<Option<User>, UserError> {
             let by_email = self.users_by_email.lock().unwrap();
             let users = self.users.lock().unwrap();
-            
+
             if let Some(user_id) = by_email.get(email) {
                 Ok(users.get(user_id).cloned())
             } else {
@@ -118,7 +118,10 @@ mod tests {
             }
         }
 
-        async fn find_by_username_or_email(&self, username_or_email: &str) -> Result<Option<User>, UserError> {
+        async fn find_by_username_or_email(
+            &self,
+            username_or_email: &str,
+        ) -> Result<Option<User>, UserError> {
             // Try username first
             if let Some(user) = self.find_by_username(username_or_email).await? {
                 return Ok(Some(user));
@@ -129,7 +132,7 @@ mod tests {
 
         async fn update(&self, id: Uuid, request: UpdateUserRequest) -> Result<User, UserError> {
             let mut users = self.users.lock().unwrap();
-            
+
             if let Some(user) = users.get_mut(&id) {
                 if let Some(display_name) = request.display_name {
                     user.display_name = Some(display_name);
@@ -176,7 +179,11 @@ mod tests {
             }
         }
 
-        async fn set_email_verification_token(&self, _id: Uuid, _token: String) -> Result<(), UserError> {
+        async fn set_email_verification_token(
+            &self,
+            _id: Uuid,
+            _token: String,
+        ) -> Result<(), UserError> {
             Ok(()) // Mock implementation
         }
 
@@ -184,11 +191,19 @@ mod tests {
             Ok(None) // Mock implementation
         }
 
-        async fn set_password_reset_token(&self, _id: Uuid, _token: String) -> Result<(), UserError> {
+        async fn set_password_reset_token(
+            &self,
+            _id: Uuid,
+            _token: String,
+        ) -> Result<(), UserError> {
             Ok(()) // Mock implementation
         }
 
-        async fn reset_password(&self, _token: &str, _new_password: &str) -> Result<Option<User>, UserError> {
+        async fn reset_password(
+            &self,
+            _token: &str,
+            _new_password: &str,
+        ) -> Result<Option<User>, UserError> {
             Ok(None) // Mock implementation
         }
     }
@@ -216,7 +231,10 @@ mod tests {
         assert_eq!(UserRole::from_str("admin"), Some(UserRole::Admin));
         assert_eq!(UserRole::from_str("editor"), Some(UserRole::Editor));
         assert_eq!(UserRole::from_str("author"), Some(UserRole::Author));
-        assert_eq!(UserRole::from_str("contributor"), Some(UserRole::Contributor));
+        assert_eq!(
+            UserRole::from_str("contributor"),
+            Some(UserRole::Contributor)
+        );
         assert_eq!(UserRole::from_str("subscriber"), Some(UserRole::Subscriber));
         assert_eq!(UserRole::from_str("invalid"), None);
     }
@@ -444,7 +462,10 @@ mod tests {
         assert_eq!(updated_user.bio, Some("Updated bio".to_string()));
         assert_eq!(updated_user.social_twitter, Some("@updated".to_string()));
         assert_eq!(updated_user.social_github, Some("updated_user".to_string()));
-        assert_eq!(updated_user.website_url, Some("https://updated.com".to_string()));
+        assert_eq!(
+            updated_user.website_url,
+            Some("https://updated.com".to_string())
+        );
     }
 
     #[tokio::test]
@@ -472,10 +493,16 @@ mod tests {
         // Set up password verification
         repo.set_password_verification(created_user.id, "correct_password".to_string());
 
-        let is_valid = repo.verify_password(&created_user, "correct_password").await.unwrap();
+        let is_valid = repo
+            .verify_password(&created_user, "correct_password")
+            .await
+            .unwrap();
         assert!(is_valid);
 
-        let is_invalid = repo.verify_password(&created_user, "wrong_password").await.unwrap();
+        let is_invalid = repo
+            .verify_password(&created_user, "wrong_password")
+            .await
+            .unwrap();
         assert!(!is_invalid);
     }
 
@@ -499,7 +526,7 @@ mod tests {
     async fn test_service_register_invalid_data() {
         let repo = Arc::new(MockUserRepository::new());
         let service = UserServiceImpl::new(repo);
-        
+
         let invalid_request = CreateUserRequest {
             username: "ab".to_string(), // Too short
             email: "test@example.com".to_string(),
@@ -590,11 +617,16 @@ mod tests {
             website_url: None,
         };
 
-        let result = service.update_profile(created_user.id, update_request).await;
+        let result = service
+            .update_profile(created_user.id, update_request)
+            .await;
         assert!(result.is_ok());
 
         let updated_response = result.unwrap();
-        assert_eq!(updated_response.display_name, Some("New Display Name".to_string()));
+        assert_eq!(
+            updated_response.display_name,
+            Some("New Display Name".to_string())
+        );
         assert_eq!(updated_response.bio, Some("New bio".to_string()));
     }
 
@@ -614,7 +646,9 @@ mod tests {
             new_password: "new_password123".to_string(),
         };
 
-        let result = service.change_password(created_user.id, change_request).await;
+        let result = service
+            .change_password(created_user.id, change_request)
+            .await;
         assert!(result.is_ok());
     }
 
@@ -634,7 +668,9 @@ mod tests {
             new_password: "new_password123".to_string(),
         };
 
-        let result = service.change_password(created_user.id, change_request).await;
+        let result = service
+            .change_password(created_user.id, change_request)
+            .await;
         assert!(matches!(result, Err(UserError::InvalidCredentials)));
     }
 
@@ -664,7 +700,7 @@ mod tests {
         };
 
         let response: UserResponse = user.clone().into();
-        
+
         assert_eq!(response.id, user.id);
         assert_eq!(response.username, user.username);
         assert_eq!(response.email, user.email);
@@ -705,7 +741,7 @@ mod tests {
         };
 
         let summary: UserSummary = user.clone().into();
-        
+
         assert_eq!(summary.id, user.id);
         assert_eq!(summary.username, user.username);
         assert_eq!(summary.display_name, user.display_name);

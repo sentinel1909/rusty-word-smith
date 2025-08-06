@@ -12,7 +12,7 @@ Secrets*.toml
 /target
 
 # test data
-/test_data
+/server/test_dir
 
 # macOS
 .DS_Store

@@ -1,15 +1,16 @@
 // app/src/models/user/repository.rs
 
 // dependencies
-use super::dto::{CreateUserRequest, UpdateUserRequest};
-use super::entity::{User, UserRole};
-use super::error::UserError;
 use argon2::password_hash::{SaltString, rand_core::OsRng};
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use async_trait::async_trait;
+use jiff_sqlx::Timestamp as SqlxTimestamp;
 use pavex::time::Timestamp;
 use sqlx::{PgPool, Row};
 use std::time::Duration;
+use super::dto::{CreateUserRequest, UpdateUserRequest};
+use super::entity::{User, UserRole};
+use super::error::UserError;
 use uuid::Uuid;
 
 // traits
@@ -68,7 +69,7 @@ impl SqlxUserRepository {
 
     /// Helper function to map database row to User struct
     fn map_row_to_user(row: sqlx::postgres::PgRow) -> Result<User, UserError> {
-       let role: UserRole = row.get("role");
+        let role: UserRole = row.get("role");
         Ok(User {
             id: row.get("id"),
             username: row.get("username"),
@@ -81,24 +82,15 @@ impl SqlxUserRepository {
             is_active: row.get("is_active"),
             email_verified: row.get("email_verified"),
             email_verification_token: row.get("email_verification_token"),
-            email_verification_expires_at: row
-            .get::<Option<String>, _>("email_verification_expires_at")
-            .and_then(|s| s.parse::<Timestamp>().ok()),
+
+            email_verification_expires_at: row.get::<Option<SqlxTimestamp>, _>("email_verification_expires_at").map(|t| t.into()),
             password_reset_token: row.get("password_reset_token"),
-            password_reset_expires_at: row
-                .get::<Option<String>, _>("password_reset_expires_at")
-                .and_then(|s| s.parse::<Timestamp>().ok()),
+            password_reset_expires_at: row.get::<Option<SqlxTimestamp>, _>("password_reset_expires_at").map(|t| t.into()),
             social_twitter: row.get("social_twitter"),
             social_github: row.get("social_github"),
             website_url: row.get("website_url"),
-            created_at: row
-                .get::<String, _>("created_at")
-                .parse::<Timestamp>()
-                .unwrap_or_else(|_| Timestamp::now()),
-            updated_at: row
-                .get::<String, _>("updated_at")
-                .parse::<Timestamp>()
-                .unwrap_or_else(|_| Timestamp::now()),
+            created_at: row.get::<SqlxTimestamp, _>("created_at").into(),
+            updated_at: row.get::<SqlxTimestamp, _>("updated_at").into(),
         })
     }
 }

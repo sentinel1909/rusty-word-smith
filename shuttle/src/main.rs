@@ -10,8 +10,8 @@ use shuttle_runtime::{SecretStore, Secrets};
 use shuttle_shared_db::Postgres;
 use sqlx::PgPool;
 use startup::{
-    build_application_state, determine_profile, load_application_config,
-    run_migrations, setup_components, setup_telemetry,
+    build_application_state, determine_profile, load_application_config, run_migrations,
+    setup_components, setup_telemetry,
 };
 
 // main function

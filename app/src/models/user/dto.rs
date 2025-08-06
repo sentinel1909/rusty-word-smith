@@ -1,8 +1,8 @@
 // app/src/models/user/dto.rs
 
 // dependencies
-use crate::errors::ApiError;
 use super::{User, UserRole};
+use crate::errors::ApiError;
 use pavex::{IntoResponse, Response, time::Timestamp};
 use serde::{Deserialize, Serialize};
 use std::sync::LazyLock;
@@ -10,7 +10,7 @@ use uuid::Uuid;
 use validator::Validate;
 
 /// Request DTO for user registration
-#[derive(Clone,Debug, Deserialize, Validate)]
+#[derive(Clone, Debug, Deserialize, Validate)]
 pub struct CreateUserRequest {
     #[validate(length(min = 3, max = 50, message = "Username must be 3-50 characters"))]
     #[validate(regex(

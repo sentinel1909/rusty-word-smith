@@ -11,11 +11,7 @@ use sqlx::PgPool;
 
 // setup the telemetry
 pub fn setup_telemetry() -> Result<(), CustomError> {
-    let subscriber = get_subscriber(
-        "rust-word-smith".into(),
-        "info".into(),
-        std::io::stdout,
-    );
+    let subscriber = get_subscriber("rust-word-smith".into(), "info".into(), std::io::stdout);
     init_telemetry(subscriber)?;
     Ok(())
 }

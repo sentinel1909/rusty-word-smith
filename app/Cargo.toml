@@ -19,6 +19,7 @@ argon2 = "0.5.3"
 async-trait = "0.1.88"
 cargo_px_env = "0.1"
 humantime-serde = "1.1"
+jiff-sqlx = { version = "0.1", features = ["postgres"] }
 pavex = { version = "0.2.2" }
 pavex_tracing = { version = "0.2.2" }
 pavex_cli_client = { version = "0.2.2" }
