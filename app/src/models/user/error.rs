@@ -1,5 +1,7 @@
 // app/src/models/user/error.rs
 
+use crate::response::IntoApiError;
+use pavex::http::StatusCode;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -24,4 +26,24 @@ pub enum UserError {
 
     #[error("Password hashing error: {0}")]
     PasswordHash(String),
+}
+
+impl IntoApiError for UserError {
+    fn code(&self) -> Option<u16> {
+        match self {
+            UserError::Validation { .. } => Some(StatusCode::BAD_REQUEST.as_u16()),
+            UserError::UserNotFound => Some(StatusCode::NOT_FOUND.as_u16()),
+            UserError::EmailExists | UserError::UsernameExists => {
+                Some(StatusCode::CONFLICT.as_u16())
+            }
+            UserError::InvalidCredentials => Some(StatusCode::UNAUTHORIZED.as_u16()),
+            UserError::Database(_) | UserError::PasswordHash(_) => {
+                Some(StatusCode::INTERNAL_SERVER_ERROR.as_u16())
+            }
+        }
+    }
+
+    fn message(&self) -> String {
+        self.to_string()
+    }
 }

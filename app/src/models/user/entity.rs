@@ -25,8 +25,8 @@ impl Default for UserRole {
 }
 
 impl UserRole {
-    /// Parse role from string - useful for manual row mapping
-    pub fn from_str(s: &str) -> Option<Self> {
+    // Parse role from string - useful for manual row mapping
+    pub fn frm_str(s: &str) -> Option<Self> {
         match s {
             "admin" => Some(Self::Admin),
             "editor" => Some(Self::Editor),
@@ -38,7 +38,7 @@ impl UserRole {
     }
 }
 
-/// Core User entity that maps directly to your database table
+// Core User entity that maps directly to your database table
 #[derive(Debug, Clone, FromRow, Serialize)]
 pub struct User {
     pub id: Uuid,
@@ -74,12 +74,12 @@ pub struct User {
 }
 
 impl User {
-    /// Check if user can perform admin actions
+    // Check if user can perform admin actions
     pub fn is_admin(&self) -> bool {
         matches!(self.role, UserRole::Admin)
     }
 
-    /// Check if user can create/edit content
+    // Check if user can create/edit content
     pub fn can_write(&self) -> bool {
         matches!(
             self.role,
@@ -87,12 +87,12 @@ impl User {
         )
     }
 
-    /// Check if user can moderate comments
+    // Check if user can moderate comments
     pub fn can_moderate(&self) -> bool {
         matches!(self.role, UserRole::Admin | UserRole::Editor)
     }
 
-    /// Get display name, falling back to username
+    // Get display name, falling back to username
     pub fn display_name(&self) -> &str {
         self.display_name.as_deref().unwrap_or(&self.username)
     }

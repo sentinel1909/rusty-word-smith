@@ -228,15 +228,15 @@ mod tests {
     // Entity tests
     #[test]
     fn test_user_role_from_str() {
-        assert_eq!(UserRole::from_str("admin"), Some(UserRole::Admin));
-        assert_eq!(UserRole::from_str("editor"), Some(UserRole::Editor));
-        assert_eq!(UserRole::from_str("author"), Some(UserRole::Author));
+        assert_eq!(UserRole::frm_str("admin"), Some(UserRole::Admin));
+        assert_eq!(UserRole::frm_str("editor"), Some(UserRole::Editor));
+        assert_eq!(UserRole::frm_str("author"), Some(UserRole::Author));
         assert_eq!(
-            UserRole::from_str("contributor"),
+            UserRole::frm_str("contributor"),
             Some(UserRole::Contributor)
         );
-        assert_eq!(UserRole::from_str("subscriber"), Some(UserRole::Subscriber));
-        assert_eq!(UserRole::from_str("invalid"), None);
+        assert_eq!(UserRole::frm_str("subscriber"), Some(UserRole::Subscriber));
+        assert_eq!(UserRole::frm_str("invalid"), None);
     }
 
     #[test]

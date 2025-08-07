@@ -46,7 +46,7 @@ impl UserService for UserServiceImpl {
     async fn register(&self, request: CreateUserRequest) -> Result<UserResponse, UserError> {
         // Validate input
         request.validate().map_err(|e| UserError::Validation {
-            message: format!("Validation failed: {}", e),
+            message: format!("Validation failed: {e}"),
         })?;
 
         // Create user
@@ -58,7 +58,7 @@ impl UserService for UserServiceImpl {
     async fn login(&self, request: LoginRequest) -> Result<UserResponse, UserError> {
         // Validate input
         request.validate().map_err(|e| UserError::Validation {
-            message: format!("Validation failed: {}", e),
+            message: format!("Validation failed: {e}"),
         })?;
 
         // Find user by username or email
@@ -112,7 +112,7 @@ impl UserService for UserServiceImpl {
     ) -> Result<UserResponse, UserError> {
         // Validate input
         request.validate().map_err(|e| UserError::Validation {
-            message: format!("Validation failed: {}", e),
+            message: format!("Validation failed: {e}"),
         })?;
 
         // Update user
@@ -128,7 +128,7 @@ impl UserService for UserServiceImpl {
     ) -> Result<(), UserError> {
         // Validate input
         request.validate().map_err(|e| UserError::Validation {
-            message: format!("Validation failed: {}", e),
+            message: format!("Validation failed: {e}"),
         })?;
 
         // Get current user

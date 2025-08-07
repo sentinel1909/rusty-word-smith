@@ -103,10 +103,10 @@ impl DatabaseConfig {
     }
 
     pub async fn get_database_pool(&self) -> PgPool {
-        let pool = PgPoolOptions::new()
+        
+        PgPoolOptions::new()
             .acquire_timeout(std::time::Duration::from_secs(2))
-            .connect_lazy_with(self.with_db());
-        pool
+            .connect_lazy_with(self.with_db())
     }
 
     pub async fn get_shared_database_pool(&self) -> Arc<PgPool> {

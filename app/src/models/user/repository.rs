@@ -99,12 +99,12 @@ impl SqlxUserRepository {
 impl UserRepository for SqlxUserRepository {
     async fn create(&self, request: CreateUserRequest) -> Result<User, UserError> {
         // Check if username already exists
-        if let Some(_) = self.find_by_username(&request.username).await? {
+        if (self.find_by_username(&request.username).await?).is_some() {
             return Err(UserError::UsernameExists);
         }
 
         // Check if email already exists
-        if let Some(_) = self.find_by_email(&request.email).await? {
+        if (self.find_by_email(&request.email).await?).is_some() {
             return Err(UserError::EmailExists);
         }
 
@@ -148,7 +148,7 @@ impl UserRepository for SqlxUserRepository {
             FROM users WHERE id = $1
             "#,
         )
-        .bind(&id)
+        .bind(id)
         .fetch_optional(&self.pool)
         .await?;
 
@@ -171,7 +171,7 @@ impl UserRepository for SqlxUserRepository {
             FROM users WHERE username = $1
             "#,
         )
-        .bind(&username)
+        .bind(username)
         .fetch_optional(&self.pool)
         .await?;
 
@@ -194,7 +194,7 @@ impl UserRepository for SqlxUserRepository {
             FROM users WHERE email = $1
             "#,
         )
-        .bind(&email)
+        .bind(email)
         .fetch_optional(&self.pool)
         .await?;
 
@@ -221,7 +221,7 @@ impl UserRepository for SqlxUserRepository {
             WHERE username = $1 OR email = $1
             "#,
         )
-        .bind(&username_or_email)
+        .bind(username_or_email)
         .fetch_optional(&self.pool)
         .await?;
 
@@ -253,7 +253,7 @@ impl UserRepository for SqlxUserRepository {
                 created_at, updated_at
             "#,
         )
-        .bind(&id)
+        .bind(id)
         .bind(&request.display_name)
         .bind(&request.bio)
         .bind(&request.avatar_url)
@@ -277,7 +277,7 @@ impl UserRepository for SqlxUserRepository {
         let result =
             sqlx::query("UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2")
                 .bind(&password_hash)
-                .bind(&id)
+                .bind(id)
                 .execute(&self.pool)
                 .await?;
 
@@ -295,8 +295,8 @@ impl UserRepository for SqlxUserRepository {
             "UPDATE users SET email_verification_token = $1, email_verification_expires_at = $2 WHERE id = $3"
         )
         .bind(&token)
-        .bind(&expires_at.to_string()) // Convert to string for SQL
-        .bind(&id)
+        .bind(expires_at.to_string()) // Convert to string for SQL
+        .bind(id)
         .execute(&self.pool)
         .await?;
 
@@ -327,7 +327,7 @@ impl UserRepository for SqlxUserRepository {
                 created_at, updated_at
             "#,
         )
-        .bind(&token)
+        .bind(token)
         .fetch_optional(&self.pool)
         .await?;
 
@@ -344,8 +344,8 @@ impl UserRepository for SqlxUserRepository {
             "UPDATE users SET password_reset_token = $1, password_reset_expires_at = $2 WHERE id = $3"
         )
         .bind(&token)
-        .bind(&expires_at.to_string()) // Convert to string for SQL
-        .bind(&id)
+        .bind(expires_at.to_string()) // Convert to string for SQL
+        .bind(id)
         .execute(&self.pool)
         .await?;
 
@@ -383,7 +383,7 @@ impl UserRepository for SqlxUserRepository {
             "#,
         )
         .bind(&password_hash)
-        .bind(&token)
+        .bind(token)
         .fetch_optional(&self.pool)
         .await?;
 

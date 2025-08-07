@@ -89,13 +89,13 @@ async fn register_user_with_invalid_username_returns_400_bad_request() {
         .expect("Failed to parse response JSON");
 
     // Verify error message contains validation details
-    assert!(response_body.get("details").is_some());
-    let error_message = response_body["details"].as_str().expect("Details should be a string");
+    assert!(response_body.get("message").is_some());
+    let error_message = response_body["message"].as_str().expect("Message should be a string");
     assert!(error_message.contains("Username can only contain letters, numbers, and underscores"));
     
     // Verify other error response fields
-    assert_eq!(response_body["msg"], "Error");
-    assert_eq!(response_body["status"], 400);
+    assert_eq!(response_body["status"], "error");
+    assert_eq!(response_body["code"], 400);
 }
 
 // test which exercises duplicate email registration
@@ -125,14 +125,14 @@ async fn register_user_with_duplicate_email_returns_409_conflict() {
         .expect("Failed to parse response JSON");
 
     // Verify error message contains email uniqueness details
-    assert!(response_body.get("details").is_some());
-    let error_message = response_body["details"].as_str().expect("Details should be a string");
+    assert!(response_body.get("message").is_some());
+    let error_message = response_body["message"].as_str().expect("Message should be a string");
     assert!(error_message.contains("email") || error_message.contains("Email"));
     assert!(error_message.contains("exists") || error_message.contains("already"));
     
     // Verify other error response fields
-    assert_eq!(response_body["msg"], "Error");
-    assert_eq!(response_body["status"], 409);
+    assert_eq!(response_body["status"], "error");
+    assert_eq!(response_body["code"], 409);
 }
 
 // test which exercises missing required fields
@@ -155,7 +155,7 @@ async fn register_user_with_missing_required_fields_returns_400_bad_request() {
         .expect("Failed to parse response JSON");
 
     // Verify error message contains validation details
-    assert!(response_body.get("details").is_some());
-    let error_message = response_body["details"].as_str().expect("Details should be a string");
+    assert!(response_body.get("message").is_some());
+    let error_message = response_body["message"].as_str().expect("Message should be a string");
     assert!(error_message.contains("username") || error_message.contains("Username"));
 }

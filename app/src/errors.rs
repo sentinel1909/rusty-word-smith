@@ -1,92 +1,107 @@
 // app/src/errors.rs
 
+
 // dependencies
-use pavex::http::{HeaderValue, StatusCode};
+use crate::response::{ApiResponse, Status};
+use crate::models::UserError;
 use pavex::{
-    Response, error_handler,
-    response::body::{
-        TypedBody,
-        raw::{Bytes, Full},
-    },
+    error_handler,
+    http::{StatusCode},    
+    Response,
+    time::Timestamp,
 };
-use pavex_static_files::ServeError;
-use pavex_tera_template::TemplateError;
 use serde::Serialize;
-use serde_json;
+use std::convert::From;
 use thiserror::Error;
 
+// enum type to represent a public facing error
 #[derive(Debug, Error)]
 pub enum ApiError {
     #[error("Template error: {0}")]
-    TemplateError(#[from] TemplateError),
+    TemplateError(#[from] pavex_tera_template::TemplateError),
 
     #[error("Static file error: {0}")]
-    StaticFileError(#[from] ServeError),
+    StaticFileError(#[from] pavex_static_files::ServeError),
 
     #[error("Serialization error: {0}")]
     SerializationError(#[from] serde_json::Error),
 
     #[error("User error: {0}")]
-    UserError(#[from] crate::models::UserError),
+    UserError(#[from] UserError),
 }
 
-#[derive(Serialize)]
-struct ApiErrorResponse {
-    msg: String,
-    status: u16,
-    details: String,
-}
+// The error‑side of an API response never carries data, so we just use
+// `()` as the type parameter.
+impl From<&ApiError> for ApiResponse<()> {
+    fn from(err: &ApiError) -> Self {
+        // Determine the HTTP status code and the “status tag” we want to send in
+        // the envelope.
+        let (status_code, status_tag) = match err {
+            ApiError::TemplateError(_) => (StatusCode::INTERNAL_SERVER_ERROR, Status::Error),
+            ApiError::StaticFileError(e) => {
+                let lower = e.to_string().to_lowercase();
+                if lower.contains("not found") || lower.contains("no such file") {
+                    (StatusCode::NOT_FOUND, Status::Error)
+                } else {
+                    (StatusCode::INTERNAL_SERVER_ERROR, Status::Error)
+                }
+            }
+            ApiError::SerializationError(_) => (StatusCode::INTERNAL_SERVER_ERROR, Status::Error),
+            ApiError::UserError(user_err) => match user_err {
+                UserError::Validation { .. } => (StatusCode::BAD_REQUEST, Status::Error),
+                UserError::UserNotFound => (StatusCode::NOT_FOUND, Status::Error),
+                UserError::EmailExists | UserError::UsernameExists => {
+                    (StatusCode::CONFLICT, Status::Error)
+                }
+                UserError::InvalidCredentials => (StatusCode::UNAUTHORIZED, Status::Error),
+                // Any other variant is treated as an internal server error.
+                _ => (StatusCode::INTERNAL_SERVER_ERROR, Status::Error),
+            },
+        };
 
-// Custom JSON response type that sets the correct content type
-struct JsonResponse(String);
-
-impl TypedBody for JsonResponse {
-    type Body = Full<Bytes>;
-
-    fn content_type(&self) -> HeaderValue {
-        HeaderValue::from_static("application/json")
+        ApiResponse {
+            status: status_tag,
+            code: Some(status_code.as_u16()),
+            message: Some(err.to_string()),
+            data: None,
+            timestamp: Timestamp::now(),
+        }
     }
+}
 
-    fn body(self) -> Self::Body {
-        Full::new(self.0.into())
+// helper that turns an ApiResponse into a Pavex Response
+impl<T> ApiResponse<T>
+where
+    T: Serialize,
+{
+    /// Consume the envelope and produce a `pavex::Response`
+    /// (sets the correct status code and JSON body).
+    pub fn into_response(self) -> Response {
+        // Prefer the numeric `code` field; fall back to the enum variant.
+        let status = self
+            .code
+            .and_then(|c| StatusCode::from_u16(c).ok())
+            .unwrap_or(match self.status {
+                Status::Ok => StatusCode::OK,
+                Status::Error => StatusCode::INTERNAL_SERVER_ERROR,
+            });
+
+        let json = serde_json::to_string(&self).unwrap_or_else(|_| {
+            r#"{"msg":"Error","status":500,"details":"Internal server error formatting error response"}"#.to_string()
+        });
+
+        Response::new(status).set_typed_body(json)
     }
 }
 
-// error handler
+// This function is called automatically by Pavex whenever an `ApiError`
+// propagates to the top level of the request handling chain.
 #[error_handler]
 pub fn api_error2response(error: &ApiError) -> Response {
-    let status = match error {
-        ApiError::TemplateError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        ApiError::StaticFileError(serve_error) => {
-            // Check if the error message contains "not found" or similar
-            let error_msg = serve_error.to_string().to_lowercase();
-            if error_msg.contains("not found") || error_msg.contains("no such file") {
-                StatusCode::NOT_FOUND
-            } else {
-                StatusCode::INTERNAL_SERVER_ERROR
-            }
-        }
-        ApiError::SerializationError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        ApiError::UserError(user_error) => match user_error {
-            crate::models::UserError::Validation { .. } => StatusCode::BAD_REQUEST,
-            crate::models::UserError::UserNotFound => StatusCode::NOT_FOUND,
-            crate::models::UserError::EmailExists | crate::models::UserError::UsernameExists => {
-                StatusCode::CONFLICT
-            }
-            crate::models::UserError::InvalidCredentials => StatusCode::UNAUTHORIZED,
-            _ => StatusCode::INTERNAL_SERVER_ERROR,
-        },
-    };
+    // 1️⃣ Turn the error into the envelope
+    let envelope = ApiResponse::<()>::from(error);
 
-    let payload = ApiErrorResponse {
-        msg: "Error".to_string(),
-        status: status.as_u16(),
-        details: error.to_string(),
-    };
-
-    let json = serde_json::to_string(&payload).unwrap_or_else(|_| {
-        r#"{"msg":"Error","status":500,"details":"Internal server error formatting error response"}"#.to_string()
-    });
-
-    Response::new(status).set_typed_body(JsonResponse(json))
+    // 2️⃣ Create the real HTTP response
+    envelope.into_response()
 }
+
