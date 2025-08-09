@@ -1,12 +1,13 @@
 // app/src/routes/auth/login.rs
 
 // dependencies
+use crate::authorization::{USERNAME, USER_ID, USER_ROLE};
 use crate::errors::ApiError;
 use crate::models::{LoginRequest, UserSummary};
 use crate::response::ApiResponse;
 use pavex::{post, request::body::JsonBody};
 use pavex_session::Session;
-use super::{USERNAME, USER_ID, USER_ROLE, UserServiceContainer};
+use super::UserServiceContainer;
 
 // handler which will be called when the user visits the login page
 #[post(path = "/auth/login")]

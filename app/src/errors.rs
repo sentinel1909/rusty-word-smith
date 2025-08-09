@@ -25,6 +25,9 @@ pub enum ApiError {
 
     #[error("Unauthorized: {0}")]
     Unauthorized(String),
+
+    #[error("Forbidden: {0}")]
+    Forbidden(String),
 }
 
 // The error‑side of an API response never carries data, so we just use
@@ -35,6 +38,7 @@ impl From<&ApiError> for ApiResponse<()> {
         // the envelope.
         let (status_code, status_tag) = match err {
             ApiError::Unauthorized(_) => (StatusCode::UNAUTHORIZED, Status::Error),
+            ApiError::Forbidden(_) => (StatusCode::FORBIDDEN, Status::Error),
             ApiError::TemplateError(_) => (StatusCode::INTERNAL_SERVER_ERROR, Status::Error),
             ApiError::StaticFileError(e) => {
                 let lower = e.to_string().to_lowercase();

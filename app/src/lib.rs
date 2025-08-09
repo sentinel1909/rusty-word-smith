@@ -1,6 +1,7 @@
 // app/src/lib.rs
 
 // modules
+pub mod authorization;
 mod blueprint;
 pub mod configuration;
 pub mod errors;

@@ -1,12 +1,12 @@
 // app/src/routes/auth/whoami.rs
 
 // dependencies
+use crate::authorization::{USERNAME, USER_ID, USER_ROLE};
 use crate::errors::ApiError;
 use crate::models::{UserRole, WhoAmIResponse};
 use crate::response::ApiResponse;
 use pavex::get;
 use pavex_session::Session;
-use super::{USERNAME, USER_ID, USER_ROLE};
 use uuid::Uuid;
 
 #[get(path = "/auth/whoami")]

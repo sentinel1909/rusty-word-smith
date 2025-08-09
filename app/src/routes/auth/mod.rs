@@ -18,11 +18,6 @@ use pavex::methods;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-pub const USER_ID: &str = "user.id";
-pub const USER_ROLE: &str = "user.role";
-pub const USERNAME: &str = "user.username";
-
-
 // struct type to wrap a user service in a container
 pub struct UserServiceContainer(pub Box<dyn UserService>);
 
