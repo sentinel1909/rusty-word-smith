@@ -46,23 +46,28 @@ async fn register_user_returns_200_ok_and_user_record() {
     assert!(response_body.get("password").is_none());
 
     // Verify the user was actually persisted to the database
-    let user_id = response_body["id"].as_str().expect("User ID should be present");
+    let user_id = response_body["id"]
+        .as_str()
+        .expect("User ID should be present");
     let user_uuid = uuid::Uuid::parse_str(user_id).expect("User ID should be a valid UUID");
-    
+
     // Query the database directly to verify persistence
     let db_user = sqlx::query(
         "SELECT username, email, display_name, role::text, is_active, email_verified FROM users WHERE id = $1"
     )
     .bind(user_uuid)
-    .fetch_one(&api._api_db_pool)
+    .fetch_one(&api.api_db_pool)
     .await
     .expect("User should exist in database");
 
     // Verify the database record matches the request data
     assert_eq!(db_user.get::<String, _>("username"), test_user.username);
     assert_eq!(db_user.get::<String, _>("email"), test_user.email);
-    assert_eq!(db_user.get::<String, _>("display_name"), test_user.display_name);
-    
+    assert_eq!(
+        db_user.get::<String, _>("display_name"),
+        test_user.display_name
+    );
+
     // Verify default values are set correctly
     assert_eq!(db_user.get::<String, _>("role"), "subscriber");
     assert_eq!(db_user.get::<bool, _>("is_active"), true);
@@ -90,9 +95,11 @@ async fn register_user_with_invalid_username_returns_400_bad_request() {
 
     // Verify error message contains validation details
     assert!(response_body.get("message").is_some());
-    let error_message = response_body["message"].as_str().expect("Message should be a string");
+    let error_message = response_body["message"]
+        .as_str()
+        .expect("Message should be a string");
     assert!(error_message.contains("Username can only contain letters, numbers, and underscores"));
-    
+
     // Verify other error response fields
     assert_eq!(response_body["status"], "error");
     assert_eq!(response_body["code"], 400);
@@ -104,11 +111,11 @@ async fn register_user_with_duplicate_email_returns_409_conflict() {
     // Given
     let api = TestApi::spawn().await;
     let test_user = TestUser::unique();
-    
+
     // Register first user
     let response1 = api.post_register(&test_user).await;
     assert_eq!(response1.status(), StatusCode::OK);
-    
+
     // Create second user with same email but different username
     let mut duplicate_user = TestUser::unique();
     duplicate_user.email = test_user.email.clone();
@@ -126,10 +133,12 @@ async fn register_user_with_duplicate_email_returns_409_conflict() {
 
     // Verify error message contains email uniqueness details
     assert!(response_body.get("message").is_some());
-    let error_message = response_body["message"].as_str().expect("Message should be a string");
+    let error_message = response_body["message"]
+        .as_str()
+        .expect("Message should be a string");
     assert!(error_message.contains("email") || error_message.contains("Email"));
     assert!(error_message.contains("exists") || error_message.contains("already"));
-    
+
     // Verify other error response fields
     assert_eq!(response_body["status"], "error");
     assert_eq!(response_body["code"], 409);
@@ -156,6 +165,8 @@ async fn register_user_with_missing_required_fields_returns_400_bad_request() {
 
     // Verify error message contains validation details
     assert!(response_body.get("message").is_some());
-    let error_message = response_body["message"].as_str().expect("Message should be a string");
+    let error_message = response_body["message"]
+        .as_str()
+        .expect("Message should be a string");
     assert!(error_message.contains("username") || error_message.contains("Username"));
 }

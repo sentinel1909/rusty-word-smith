@@ -1,3 +1,6 @@
+// app/src/blueprint.rs
+
+// dependencies
 use crate::telemetry;
 use pavex::{Blueprint, blueprint::from, cookie::INJECT_RESPONSE_COOKIES};
 use pavex_session::FINALIZE_SESSION;

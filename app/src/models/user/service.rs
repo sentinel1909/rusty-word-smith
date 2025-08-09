@@ -16,7 +16,7 @@ use validator::Validate;
 #[async_trait]
 pub trait UserService: Send + Sync {
     async fn register(&self, request: CreateUserRequest) -> Result<UserResponse, UserError>;
-    async fn login(&self, request: LoginRequest) -> Result<UserResponse, UserError>;
+    async fn login(&self, request: LoginRequest) -> Result<UserSummary, UserError>;
     async fn get_user(&self, id: Uuid) -> Result<UserResponse, UserError>;
     async fn get_user_summary(&self, id: Uuid) -> Result<UserSummary, UserError>;
     async fn update_profile(
@@ -55,7 +55,7 @@ impl UserService for UserServiceImpl {
         Ok(UserResponse::from(user))
     }
 
-    async fn login(&self, request: LoginRequest) -> Result<UserResponse, UserError> {
+    async fn login(&self, request: LoginRequest) -> Result<UserSummary, UserError> {
         // Validate input
         request.validate().map_err(|e| UserError::Validation {
             message: format!("Validation failed: {e}"),
@@ -82,7 +82,13 @@ impl UserService for UserServiceImpl {
             return Err(UserError::InvalidCredentials);
         }
 
-        Ok(UserResponse::from(user))
+        Ok(UserSummary {
+            id: user.id,
+            username: user.username,
+            display_name: None,
+            avatar_url: None,
+            role: user.role,
+        })
     }
 
     async fn get_user(&self, id: Uuid) -> Result<UserResponse, UserError> {

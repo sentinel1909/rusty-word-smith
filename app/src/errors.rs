@@ -1,15 +1,9 @@
 // app/src/errors.rs
 
-
 // dependencies
-use crate::response::{ApiResponse, Status};
 use crate::models::UserError;
-use pavex::{
-    error_handler,
-    http::{StatusCode},    
-    Response,
-    time::Timestamp,
-};
+use crate::response::{ApiResponse, Status};
+use pavex::{Response, error_handler, http::StatusCode, time::Timestamp};
 use serde::Serialize;
 use std::convert::From;
 use thiserror::Error;
@@ -28,6 +22,9 @@ pub enum ApiError {
 
     #[error("User error: {0}")]
     UserError(#[from] UserError),
+
+    #[error("Unauthorized: {0}")]
+    Unauthorized(String),
 }
 
 // The error‑side of an API response never carries data, so we just use
@@ -37,6 +34,7 @@ impl From<&ApiError> for ApiResponse<()> {
         // Determine the HTTP status code and the “status tag” we want to send in
         // the envelope.
         let (status_code, status_tag) = match err {
+            ApiError::Unauthorized(_) => (StatusCode::UNAUTHORIZED, Status::Error),
             ApiError::TemplateError(_) => (StatusCode::INTERNAL_SERVER_ERROR, Status::Error),
             ApiError::StaticFileError(e) => {
                 let lower = e.to_string().to_lowercase();
@@ -104,4 +102,3 @@ pub fn api_error2response(error: &ApiError) -> Response {
     // 2️⃣ Create the real HTTP response
     envelope.into_response()
 }
-

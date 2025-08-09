@@ -21,12 +21,12 @@ pub struct TestUser {
 
 impl TestUser {
     /// Create a new test user with valid default values
-    pub fn new() -> Self {
+    pub fn new(username: &str, email: &str, password: &str, display_name: &str) -> Self {
         Self {
-            username: "testuser".to_string(),
-            email: "test@example.com".to_string(),
-            password: "password123".to_string(),
-            display_name: "Test User".to_string(),
+            username: username.to_string(),
+            email: email.to_string(),
+            password: password.to_string(),
+            display_name: display_name.to_string(),
         }
     }
 
@@ -59,7 +59,7 @@ impl TestUser {
 
 impl Default for TestUser {
     fn default() -> Self {
-        Self::new()
+        Self::new("", "", "", "")
     }
 }
 
@@ -96,7 +96,7 @@ async fn configure_database(config: &ApplicationConfig) -> PgPool {
 pub struct TestApi {
     pub api_address: String,
     pub api_client: reqwest::Client,
-    pub _api_db_pool: PgPool,
+    pub api_db_pool: PgPool,
 }
 
 /// Convenient methods for calling the API under test.
@@ -127,19 +127,26 @@ impl TestApi {
         let template_engine = TemplateEngine::from_config(&config.templateconfig)
             .expect("Failed to build template engine");
         let static_server = StaticServer::from_config(config.staticserverconfig.clone());
-        let db_pool = config.databaseconfig.get_database_pool().await;
+        let api_db_pool = config.databaseconfig.get_database_pool().await;
 
         let application_state =
-            ApplicationState::new(config, db_pool.clone(), template_engine, static_server)
+            ApplicationState::new(config, api_db_pool.clone(), template_engine, static_server)
                 .await
                 .expect("Failed to build the application state");
 
         tokio::spawn(async move { run(server_builder, application_state).await });
 
+        // create an API client
+        let api_client = reqwest::Client::builder()
+            .cookie_store(true)
+            .redirect(reqwest::redirect::Policy::none())
+            .build()
+            .expect("Failed to build a reqwest client");
+
         TestApi {
             api_address,
-            api_client: reqwest::Client::new(),
-            _api_db_pool: db_pool,
+            api_client,
+            api_db_pool,
         }
     }
 
@@ -226,5 +233,33 @@ impl TestApi {
             .send()
             .await
             .expect("Failed to execute request.")
+    }
+
+    pub async fn post_login(&self, username_or_email: &str, password: &str) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/auth/login", &self.api_address))
+            .json(&serde_json::json!({
+                "username_or_email": username_or_email,
+                "password": password
+            }))
+            .send()
+            .await
+            .expect("Failed to execute /auth/login")
+    }
+
+    pub async fn get_whoami(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/auth/whoami", &self.api_address))
+            .send()
+            .await
+            .expect("Failed to execute /auth/whoami")
+    }
+
+    pub async fn post_logout(&self) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/auth/logout", &self.api_address))
+            .send()
+            .await
+            .expect("Failed to execute /auth/logout")
     }
 }

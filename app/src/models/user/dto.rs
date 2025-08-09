@@ -148,3 +148,27 @@ impl IntoResponse for UserResponse {
         }
     }
 }
+
+impl IntoResponse for UserSummary {
+    fn into_response(self) -> Response {
+        match serde_json::to_string(&self) {
+            Ok(body) => Response::ok().set_typed_body(body),
+            Err(err) => crate::errors::api_error2response(&ApiError::SerializationError(err)),
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct WhoAmIResponse {
+    pub id: Uuid,
+    pub username: String,
+    pub role: UserRole,
+}
+
+impl IntoResponse for WhoAmIResponse {
+    fn into_response(self) -> Response {
+        // You can add proper error handling later instead of unwrap()
+        let body = serde_json::to_string(&self).unwrap();
+        Response::ok().set_typed_body(body)
+    }
+}

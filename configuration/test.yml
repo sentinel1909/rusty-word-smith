@@ -2,6 +2,12 @@
 server:
   ip: "127.0.0.1"
   port: 0  # Use port 0 for random assignment in tests
+session:
+  cookie:
+    secure: false
+    http_only: true
+    same_site: Lax
+    name: sid
 databaseconfig:
   host: "localhost"
   port: 5432

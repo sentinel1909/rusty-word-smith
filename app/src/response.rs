@@ -1,6 +1,7 @@
 // app/src/response.rs
 
 // dependencies
+use pavex::{IntoResponse, Response, response::body::Json};
 use pavex::time::Timestamp;
 use serde::{Deserialize, Serialize};
 
@@ -67,11 +68,7 @@ impl<T> ApiResponse<T> {
 
     // Success response *with* payload, message and code – the most general variant.
     #[must_use]
-    pub fn ok_full(
-        data: T,
-        message: impl Into<String>,
-        code: u16,
-    ) -> Self {
+    pub fn ok_full(data: T, message: impl Into<String>, code: u16) -> Self {
         Self {
             data: Some(data),
             ..Self::base(Status::Ok, Some(message.into()), Some(code))
@@ -88,6 +85,23 @@ impl<T> ApiResponse<T> {
     #[must_use]
     pub fn err_with_code(message: impl Into<String>, code: u16) -> Self {
         Self::base(Status::Error, Some(message.into()), Some(code))
+    }
+}
+
+impl<T> IntoResponse for ApiResponse<T>
+where
+    T: Serialize,
+{
+    fn into_response(self) -> Response {
+        match Json::new(self) {
+            Ok(json_body) => Response::ok().set_typed_body(json_body),
+            Err(_) => {
+                // Fallback: emit a minimal error JSON and 500
+                let fallback = Json::new(ApiResponse::<()>::err("serialization error"))
+                    .expect("serializing fallback ApiResponse must succeed");
+                Response::internal_server_error().set_typed_body(fallback)
+            }
+        }
     }
 }
 

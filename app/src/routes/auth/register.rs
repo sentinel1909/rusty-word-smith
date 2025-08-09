@@ -1,26 +1,10 @@
 // app/src/routes/auth/register.rs
 
 // dependencies
+use super::UserServiceContainer;
 use crate::errors::ApiError;
-use crate::models::SqlxUserRepository;
-use crate::models::UserService;
-use crate::models::UserServiceImpl;
 use crate::models::{CreateUserRequest, UserResponse};
-use pavex::{methods, post, request::body::JsonBody};
-use sqlx::PgPool;
-use std::sync::Arc;
-
-pub struct UserServiceContainer(pub Box<dyn UserService>);
-
-#[methods]
-impl UserServiceContainer {
-    #[singleton]
-    pub fn new(pool: &PgPool) -> Self {
-        let repository = Arc::new(SqlxUserRepository::new(pool.clone()));
-        let service = UserServiceImpl::new(repository);
-        UserServiceContainer(Box::new(service))
-    }
-}
+use pavex::{post, request::body::JsonBody};
 
 // handler which will be called when the user visits the register page
 #[post(path = "/auth/register")]

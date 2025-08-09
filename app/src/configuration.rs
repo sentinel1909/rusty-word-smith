@@ -103,7 +103,6 @@ impl DatabaseConfig {
     }
 
     pub async fn get_database_pool(&self) -> PgPool {
-        
         PgPoolOptions::new()
             .acquire_timeout(std::time::Duration::from_secs(2))
             .connect_lazy_with(self.with_db())

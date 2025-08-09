@@ -1,6 +1,9 @@
 // app/src/models/user/repository.rs
 
 // dependencies
+use super::dto::{CreateUserRequest, UpdateUserRequest};
+use super::entity::{User, UserRole};
+use super::error::UserError;
 use argon2::password_hash::{SaltString, rand_core::OsRng};
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use async_trait::async_trait;
@@ -8,9 +11,6 @@ use jiff_sqlx::Timestamp as SqlxTimestamp;
 use pavex::time::Timestamp;
 use sqlx::{PgPool, Row};
 use std::time::Duration;
-use super::dto::{CreateUserRequest, UpdateUserRequest};
-use super::entity::{User, UserRole};
-use super::error::UserError;
 use uuid::Uuid;
 
 // traits
@@ -83,9 +83,13 @@ impl SqlxUserRepository {
             email_verified: row.get("email_verified"),
             email_verification_token: row.get("email_verification_token"),
 
-            email_verification_expires_at: row.get::<Option<SqlxTimestamp>, _>("email_verification_expires_at").map(|t| t.into()),
+            email_verification_expires_at: row
+                .get::<Option<SqlxTimestamp>, _>("email_verification_expires_at")
+                .map(|t| t.into()),
             password_reset_token: row.get("password_reset_token"),
-            password_reset_expires_at: row.get::<Option<SqlxTimestamp>, _>("password_reset_expires_at").map(|t| t.into()),
+            password_reset_expires_at: row
+                .get::<Option<SqlxTimestamp>, _>("password_reset_expires_at")
+                .map(|t| t.into()),
             social_twitter: row.get("social_twitter"),
             social_github: row.get("social_github"),
             website_url: row.get("website_url"),
