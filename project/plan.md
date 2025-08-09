@@ -21,7 +21,7 @@ This is a personal blog platform primarily for individual use. The focus is on g
 - **Components**:
   - Login endpoint with username/email + password [X]
   - Session management (pavex_session already configured) [X]
-  - Protected routes for admin functionality
+  - Protected routes for admin functionality [X]
   - Logout functionality [X}]
 - **Value**: Makes the platform immediately usable
 
