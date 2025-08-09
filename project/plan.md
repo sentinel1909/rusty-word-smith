@@ -19,10 +19,10 @@ This is a personal blog platform primarily for individual use. The focus is on g
 - **Priority**: Top Priority
 - **Why**: Required to unlock all other features
 - **Components**:
-  - Login endpoint with username/email + password
-  - Session management (pavex_session already configured)
+  - Login endpoint with username/email + password [X]
+  - Session management (pavex_session already configured) [X]
   - Protected routes for admin functionality
-  - Logout functionality
+  - Logout functionality [X}]
 - **Value**: Makes the platform immediately usable
 
 #### 2. Basic Admin Dashboard
