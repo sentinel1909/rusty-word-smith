@@ -46,6 +46,15 @@ onReady(() => {
         if (first) first.focus();
       }
     });
+
+    // Show/hide password toggle
+    const toggle = document.getElementById('toggle-password');
+    const pwd = loginForm.querySelector('input[name="password"]');
+    if (toggle && pwd) {
+      toggle.addEventListener('change', () => {
+        pwd.type = toggle.checked ? 'text' : 'password';
+      });
+    }
   }
 
   // Registration form handler
@@ -76,6 +85,15 @@ onReady(() => {
         alert('Registration failed: network error');
       }
     });
+
+    // Show/hide password toggle for registration
+    const toggleReg = document.getElementById('toggle-password-register');
+    const pwdReg = registerForm.querySelector('input[name="password"]');
+    if (toggleReg && pwdReg) {
+      toggleReg.addEventListener('change', () => {
+        pwdReg.type = toggleReg.checked ? 'text' : 'password';
+      });
+    }
   }
 
   // Logout button handler
@@ -95,5 +113,11 @@ onReady(() => {
         alert('Logout failed: network error');
       }
     });
+  }
+
+  // Inject current year into footer span#year
+  const yearSpan = document.getElementById('year');
+  if (yearSpan) {
+    yearSpan.textContent = String(new Date().getFullYear());
   }
 });

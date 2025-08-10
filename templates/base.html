@@ -3,15 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
   <link rel="preload" href="/static/screen.css" as="style" />
   <link rel="stylesheet" type="text/css" href="/static/screen.css" media="screen" />
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
   <title>Rusty Word Smith | {{ title }}</title>
 </head>
 <body>
+  <header>
+    <h1>
+      Welcome to your Rusty Word Smith
+    </h1>
+  </header>
   <main>
     {% block content %} {% endblock %}
   </main>
+  <footer>
+    <p>&copy; <span id="year"></span> Jeffery D Mitchell | All rights reserved</p>
+  </footer>
   <script src="/static/scripts.js"></script>
 </body>
 </html>

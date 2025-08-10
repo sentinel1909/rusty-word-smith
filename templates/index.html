@@ -2,11 +2,10 @@
 
 {% block content %}
 <section>
-  <h1>Welcome</h1>
-  <p>{{ message }}</p>
-  <p>
-    <a href="/register">Create an account</a>
-    or <a href="/login">log in</a> to continue.
-  </p>
+  <div class="actions-vertical">
+    <a class="btn" href="/register">Create an account</a>
+    <span class="muted">or</span>
+    <a class="btn btn-secondary" href="/login">Log in</a>
+  </div>
 </section>
 {% endblock content %}

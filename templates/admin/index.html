@@ -4,9 +4,9 @@
 <section>
   <h1>Admin Dashboard</h1>
   <p>Welcome, {{ username }}.</p>
-  <p>
-    <button id="logout-btn">Log out</button>
-    <noscript><a href="/">Home</a></noscript>
-  </p>
+  <div class="actions-center">
+    <button class="btn" id="logout-btn">Log out</button>
+    <noscript><a class="btn btn-secondary" href="/">Home</a></noscript>
+  </div>
 </section>
 {% endblock content %}

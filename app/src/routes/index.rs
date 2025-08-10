@@ -10,7 +10,6 @@ use pavex_tera_template::{Context, TemplateEngine};
 pub fn index(template: &TemplateEngine) -> Result<Response, ApiError> {
     let mut context = Context::new();
     context.insert("title", "Home");
-    context.insert("message", "Hello, world!");
 
     let body: Html = template.render("index.html", &context)?.into();
 
