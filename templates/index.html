@@ -2,6 +2,11 @@
 
 {% block content %}
 <section>
-  {{ message }}
+  <h1>Welcome</h1>
+  <p>{{ message }}</p>
+  <p>
+    <a href="/register">Create an account</a>
+    or <a href="/login">log in</a> to continue.
+  </p>
 </section>
 {% endblock content %}

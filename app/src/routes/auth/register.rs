@@ -4,7 +4,8 @@
 use super::UserServiceContainer;
 use crate::errors::ApiError;
 use crate::models::{CreateUserRequest, UserResponse};
-use pavex::{post, request::body::JsonBody};
+use pavex::{get, post, request::body::JsonBody, Response, response::body::Html};
+use pavex_tera_template::{Context, TemplateEngine};
 
 // handler which will be called when the user visits the register page
 #[post(path = "/auth/register")]
@@ -17,4 +18,15 @@ pub async fn register(
     let user_response = user_service.0.register(create_user_request).await?;
 
     Ok(user_response)
+}
+
+// render the registration page
+#[get(path = "/register")]
+pub fn register_page(template: &TemplateEngine) -> Result<Response, ApiError> {
+    let mut context = Context::new();
+    context.insert("title", "Register");
+
+    let body: Html = template.render("auth/register.html", &context)?.into();
+    let response = Response::ok().set_typed_body(body);
+    Ok(response)
 }

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>Create your account</h1>
+  <form id="register-form">
+    <label>Username
+      <input type="text" name="username" required minlength="3" maxlength="50" pattern="[A-Za-z0-9_]+" />
+    </label>
+    <label>Email
+      <input type="email" name="email" required />
+    </label>
+    <label>Password
+      <input type="password" name="password" required minlength="8" maxlength="128" />
+    </label>
+    <label>Display name (optional)
+      <input type="text" name="display_name" maxlength="100" />
+    </label>
+    <button type="submit">Create account</button>
+  </form>
+  <p>Already have an account? <a href="/login">Log in</a>.</p>
+</section>
+{% endblock content %}
+
+

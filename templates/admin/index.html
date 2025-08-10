@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>Admin Dashboard</h1>
+  <p>Welcome, {{ username }}.</p>
+  <p>
+    <button id="logout-btn">Log out</button>
+    <noscript><a href="/">Home</a></noscript>
+  </p>
+</section>
+{% endblock content %}

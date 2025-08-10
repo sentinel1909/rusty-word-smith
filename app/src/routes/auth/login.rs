@@ -5,7 +5,8 @@ use crate::authorization::{USERNAME, USER_ID, USER_ROLE};
 use crate::errors::ApiError;
 use crate::models::{LoginRequest, UserSummary};
 use crate::response::ApiResponse;
-use pavex::{post, request::body::JsonBody};
+use pavex::{get, post, request::body::JsonBody, Response, response::body::Html};
+use pavex_tera_template::{Context, TemplateEngine};
 use pavex_session::Session;
 use super::UserServiceContainer;
 
@@ -32,4 +33,15 @@ pub async fn login(
         .unwrap();
 
     Ok(ApiResponse::ok(user_summary))
+}
+
+// render the login page
+#[get(path = "/login")]
+pub fn login_page(template: &TemplateEngine) -> Result<Response, ApiError> {
+    let mut context = Context::new();
+    context.insert("title", "Login");
+
+    let body: Html = template.render("auth/login.html", &context)?.into();
+    let response = Response::ok().set_typed_body(body);
+    Ok(response)
 }
