@@ -104,7 +104,7 @@ checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 
 [[package]]
 name = "app"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "argon2",
  "async-trait",
@@ -245,9 +245,9 @@ checksum = "55248b47b0caf0546f7988906588779981c43bb1bc9d0c44087278f80cdb44ba"
 
 [[package]]
 name = "biscotti"
-version = "0.4.1"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a85249c41c227536dc1d3cf50fa7270b8f7db65277ebaf03697b3c0928e243b9"
+checksum = "ddb6f28a3d15d18cace7a8010282a4d9cee1452dcd33f5861c173b4a31095b79"
 dependencies = [
  "aes-gcm-siv",
  "anyhow",
@@ -307,9 +307,9 @@ checksum = "46c5e41b57b8bba42a04676d81cb89e9ee8e859a1a66f80a5a72e1cb76b34d43"
 
 [[package]]
 name = "bytemuck"
-version = "1.23.1"
+version = "1.23.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c76a5792e44e4abe34d3abf15636779261d45a7450612059293d1d2cfc63422"
+checksum = "3995eaeebcdf32f91f980d360f78732ddc061097ab4e39991ae7a6ace9194677"
 
 [[package]]
 name = "byteorder"
@@ -331,9 +331,9 @@ checksum = "8b459425e7bfec0783df9538ecc749961f076cc793a09e91f1d082ee0012c925"
 
 [[package]]
 name = "cc"
-version = "1.2.31"
+version = "1.2.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3a42d84bb6b69d3a8b3eaacf0d88f179e1929695e1ad012b6cf64d9caaa5fd2"
+checksum = "2352e5597e9c544d5e6d9c95190d5d27738ade584fa8db0a16e130e5c2b5296e"
 dependencies = [
  "shlex",
 ]
@@ -556,12 +556,12 @@ dependencies = [
 
 [[package]]
 name = "darling"
-version = "0.21.0"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a79c4acb1fd5fa3d9304be4c76e031c54d2e92d172a393e24b19a14fe8532fe9"
+checksum = "d6b136475da5ef7b6ac596c0e956e37bad51b85b987ff3d5e230e964936736b2"
 dependencies = [
- "darling_core 0.21.0",
- "darling_macro 0.21.0",
+ "darling_core 0.21.1",
+ "darling_macro 0.21.1",
 ]
 
 [[package]]
@@ -580,9 +580,9 @@ dependencies = [
 
 [[package]]
 name = "darling_core"
-version = "0.21.0"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74875de90daf30eb59609910b84d4d368103aaec4c924824c6799b28f77d6a1d"
+checksum = "b44ad32f92b75fb438b04b68547e521a548be8acc339a6dacc4a7121488f53e6"
 dependencies = [
  "fnv",
  "ident_case",
@@ -605,11 +605,11 @@ dependencies = [
 
 [[package]]
 name = "darling_macro"
-version = "0.21.0"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e79f8e61677d5df9167cd85265f8e5f64b215cdea3fb55eebc3e622e44c7a146"
+checksum = "2b5be8a7a562d315a5b92a630c30cec6bcf663e6673f00fbb69cca66a6f521b9"
 dependencies = [
- "darling_core 0.21.0",
+ "darling_core 0.21.1",
  "quote",
  "syn",
 ]
@@ -793,9 +793,9 @@ dependencies = [
 
 [[package]]
 name = "event-listener"
-version = "5.4.0"
+version = "5.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3492acde4c3fc54c845eaab3eed8bd00c7a7d881f78bfc801e43a93dec1331ae"
+checksum = "e13b66accf52311f30a0db42147dadea9850cb48cd070028831ae5f5d4b856ab"
 dependencies = [
  "concurrent-queue",
  "parking",
@@ -1048,9 +1048,9 @@ dependencies = [
 
 [[package]]
 name = "h2"
-version = "0.4.11"
+version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17da50a276f1e01e0ba6c029e47b7100754904ee8a278f886546e98575380785"
+checksum = "f3c0b69cfcb4e1b9f1bf2f53f95f766e4661169728ec61cd3fe5a0166f2d1386"
 dependencies = [
  "atomic-waker",
  "bytes",
@@ -1067,9 +1067,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.15.4"
+version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5971ac85611da7067dbfcabef3c70ebb5606018acd9e2a3903a0da507521e0d5"
+checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
 dependencies = [
  "allocator-api2",
  "equivalent",
@@ -1937,9 +1937,9 @@ checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
 name = "pavex"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38e73111e1c0217312a06cc6c6d3866889b126fca0543cef7ef49a48f1102185"
+checksum = "99c018c3c22a1c998cb1b140f67f295a9762f16d7776b647476daf9d8e3c037c"
 dependencies = [
  "anyhow",
  "biscotti",
@@ -1982,9 +1982,9 @@ dependencies = [
 
 [[package]]
 name = "pavex_bp_schema"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "841615bb82192c22fbe407007e419228749aee64786f8dcc439b7ed65343019c"
+checksum = "cb3d14c9d92a837ce13ae4e1c046379f04d6812e3b8adfba8ad4c84ed709b5f9"
 dependencies = [
  "pavex_reflection",
  "serde",
@@ -1992,9 +1992,9 @@ dependencies = [
 
 [[package]]
 name = "pavex_cli_client"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f303be68f966f6bcfbffc39af0cd774f4fb069fabae4bea4851129af75b0bc09"
+checksum = "a906d2734b30b1673ff03016575369b6a605b3645ea4b51069b8e4135deb1a7e"
 dependencies = [
  "anyhow",
  "pavex",
@@ -2003,12 +2003,12 @@ dependencies = [
 
 [[package]]
 name = "pavex_macros"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "55afb839aa1b52930fdd780afbc7878368f54dc8fdc0038d7602d6019ff6286a"
+checksum = "4a49673b0b5f49ea74aa638981d77295bb4d35d9ccce9c90ddd6667c4e9e2e69"
 dependencies = [
  "convert_case",
- "darling 0.21.0",
+ "darling 0.21.1",
  "paste",
  "pavexc_attr_parser",
  "proc-macro2",
@@ -2018,18 +2018,18 @@ dependencies = [
 
 [[package]]
 name = "pavex_reflection"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "242c4a9b06b36f9996383b74a2b51d586c777f89cde37b7ba79dc25c3620d835"
+checksum = "98eb8ba618f4812d71f0ace9194f1c87f95df2284ae3e3c5f8b297a8afb975a4"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "pavex_session"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02bac815a58b00b3ee5ab943b5d6b3b65600c62d362555748bae51c14d44b95e"
+checksum = "a926742438050af8105721a9a020dc6933db07b5409ba5ddf72bc27f8b39bd08"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2045,9 +2045,9 @@ dependencies = [
 
 [[package]]
 name = "pavex_session_sqlx"
-version = "0.2.2"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d88becc468153974bf9f55cf038fd747418369a4c825d4cf437703d34c9d2143"
+checksum = "f230c16b133a7b7ab4dfd7c86fadc9858f7d849ad665064fb7f7be66d765ab7f"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2080,9 +2080,9 @@ dependencies = [
 
 [[package]]
 name = "pavex_tracing"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd136f773a75750de8e694fbc5db80de6fbdc796a3a40888e568ee954705a3b4"
+checksum = "599096b43aa457236f8c7677185753dce8523e6467223069e69e94eceb8b29a2"
 dependencies = [
  "pavex",
  "tracing",
@@ -2091,11 +2091,11 @@ dependencies = [
 
 [[package]]
 name = "pavexc_attr_parser"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20a8c0c0dc5e925e7b3920390a97dcdbaf3ef4537af1159e729a314f1467f9d7"
+checksum = "f4882d50121dfe68992aff3df0fcdaf94cb0fbbadb4bd1ec06a00af326a184b9"
 dependencies = [
- "darling 0.21.0",
+ "darling 0.21.1",
  "itertools",
  "pavex_bp_schema",
  "proc-macro2",
@@ -2145,9 +2145,9 @@ checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
 
 [[package]]
 name = "persist_if_changed"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4193b8945cfa43c0b94b8cf06f0928d437e50a8ab2b3be2f923efab2fa77cf59"
+checksum = "30022053b1bf025bfa672265dc3a284ddedc4950b732b2625b499954fa64a665"
 dependencies = [
  "anyhow",
  "fs-err",
@@ -2768,9 +2768,9 @@ dependencies = [
 
 [[package]]
 name = "rustversion"
-version = "1.0.21"
+version = "1.0.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a0d197bd2c9dc6e53b84da9556a69ba4cdfab8619eb41a8bd1cc2027a0f6b1d"
+checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
 
 [[package]]
 name = "ryu"
@@ -2957,7 +2957,7 @@ dependencies = [
 
 [[package]]
 name = "server"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "anyhow",
  "app",
@@ -3039,7 +3039,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
 name = "shuttle"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "app",
  "pavex",
@@ -3166,9 +3166,9 @@ dependencies = [
 
 [[package]]
 name = "signal-hook-registry"
-version = "1.4.5"
+version = "1.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9203b8055f63a2a00e2f593bb0510367fe707d7ff1e5c872de2f537b339e5410"
+checksum = "b2a4719bff48cee6b39d12c020eeb490953ad2443b7055bd0b21fca26bd8c28b"
 dependencies = [
  "libc",
 ]
@@ -3191,9 +3191,9 @@ checksum = "56199f7ddabf13fe5074ce809e7d3f42b42ae711800501b5b16ea82ad029c39d"
 
 [[package]]
 name = "slab"
-version = "0.4.10"
+version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04dc19736151f35336d325007ac991178d504a119863a2fcb3758cdb5e52c50d"
+checksum = "7a2ae44ef20feb57a68b23d846850f861394c2e02dc425a50098ae8c90267589"
 
 [[package]]
 name = "slug"
@@ -3822,9 +3822,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-util"
-version = "0.7.15"
+version = "0.7.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66a539a9ad6d5d281510d5bd368c973d636c02dbf8a67300bfb6b950696ad7df"
+checksum = "14307c986784f72ef81c89db7d9e28d6ac26d16213b109ea501696195e6e3ce5"
 dependencies = [
  "bytes",
  "futures-core",
@@ -4882,9 +4882,9 @@ dependencies = [
 
 [[package]]
 name = "zerovec"
-version = "0.11.2"
+version = "0.11.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a05eb080e015ba39cc9e23bbe5e7fb04d5fb040350f99f34e338d5fdd294428"
+checksum = "e7aa2bd55086f1ab526693ecbe444205da57e25f4489879da80635a46d90e73b"
 dependencies = [
  "yoke",
  "zerofrom",

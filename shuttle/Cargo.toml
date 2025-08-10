@@ -5,7 +5,7 @@ edition.workspace = true
 
 [dependencies]
 app = { path = "../app" }
-pavex = "0.2.1"
+pavex = "0.2.4"
 server = { path = "../server" }
 server_sdk = { path = "../server_sdk" }
 shuttle-runtime = { version = "0.56.0", default-features = false }

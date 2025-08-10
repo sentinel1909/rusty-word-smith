@@ -20,11 +20,11 @@ async-trait = "0.1.88"
 cargo_px_env = "0.1"
 humantime-serde = "1.1"
 jiff-sqlx = { version = "0.1", features = ["postgres"] }
-pavex = { version = "0.2.3" }
-pavex_tracing = { version = "0.2.3" }
-pavex_cli_client = { version = "0.2.3" }
-pavex_session = "0.2.3"
-pavex_session_sqlx = { version = "0.2.2", features = [ "postgres" ] }
+pavex = { version = "0.2.4" }
+pavex_tracing = { version = "0.2.4" }
+pavex_cli_client = { version = "0.2.4" }
+pavex_session = "0.2.4"
+pavex_session_sqlx = { version = "0.2.4", features = [ "postgres" ] }
 pavex_static_files = { git = "https://github.com/sentinel1909/pavex_static_files.git", rev = "5ced7ab" }
 pavex_tera_template = { git = "https://github.com/sentinel1909/pavex_tera_template.git", features = [
     "serde",
