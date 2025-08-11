@@ -1,10 +1,12 @@
 // app/src/routes/auth/resend.rs
 
+// dependencies
 use crate::errors::ApiError;
 use super::UserServiceContainer;
 use pavex::{post, request::body::JsonBody, Response};
 use serde::Deserialize;
 
+// struct type to represent a resent request
 #[derive(Deserialize)]
 pub struct ResendRequest {
     pub email: String,

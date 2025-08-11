@@ -1,3 +1,6 @@
+// app/src/routes/auth/check_email.rs
+
+// dependencies
 use crate::errors::ApiError;
 use pavex::{get, Response, response::body::Html};
 use pavex_tera_template::{Context, TemplateEngine};

@@ -1742,25 +1742,25 @@ pub mod route_5 {
     }
     async fn stage_1<'a, 'b, 'c, 'd, 'e>(
         s_0: pavex_tracing::RootSpan,
-        s_1: &'a app::routes::auth::UserServiceContainer,
-        s_2: &'b pavex::request::RequestHead,
+        s_1: &'a pavex::request::RequestHead,
+        s_2: &'b app::routes::auth::UserServiceContainer,
         mut s_3: pavex::cookie::ResponseCookies,
         s_4: &'c biscotti::Processor,
         s_5: &'d pavex_session::SessionConfig,
         s_6: &'e pavex_session::SessionStore,
     ) -> pavex::Response {
         let response = wrapping_1(s_0.clone(), s_1, s_2).await;
-        let response = post_processing_1(s_4, s_2, &s_0, response, s_5, s_6, &mut s_3)
+        let response = post_processing_1(s_4, s_1, &s_0, response, s_5, s_6, &mut s_3)
             .await;
         let response = post_processing_2(response, s_3, s_4, &s_0).await;
         response
     }
     async fn stage_2<'a, 'b, 'c>(
         s_0: &'a pavex_tracing::RootSpan,
-        s_1: &'b app::routes::auth::UserServiceContainer,
-        s_2: &'c pavex::request::RequestHead,
+        s_1: &'b pavex::request::RequestHead,
+        s_2: &'c app::routes::auth::UserServiceContainer,
     ) -> pavex::Response {
-        let response = handler(s_1, s_2, s_0).await;
+        let response = handler(s_1, s_0, s_2).await;
         let response = post_processing_0(response, s_0).await;
         response
     }
@@ -1777,8 +1777,8 @@ pub mod route_5 {
         let v8 = app::telemetry::root_span(v1, v0, v7);
         let v9 = crate::route_5::Next0 {
             s_0: v8,
-            s_1: v2,
-            s_2: v1,
+            s_1: v1,
+            s_2: v2,
             s_3: v6,
             s_4: v3,
             s_5: v4,
@@ -1791,8 +1791,8 @@ pub mod route_5 {
     }
     async fn wrapping_1(
         v0: pavex_tracing::RootSpan,
-        v1: &app::routes::auth::UserServiceContainer,
-        v2: &pavex::request::RequestHead,
+        v1: &pavex::request::RequestHead,
+        v2: &app::routes::auth::UserServiceContainer,
     ) -> pavex::Response {
         let v3 = crate::route_5::Next1 {
             s_0: &v0,
@@ -1806,23 +1806,37 @@ pub mod route_5 {
         <pavex::Response as pavex::IntoResponse>::into_response(v6)
     }
     async fn handler(
-        v0: &app::routes::auth::UserServiceContainer,
-        v1: &pavex::request::RequestHead,
-        v2: &pavex_tracing::RootSpan,
+        v0: &pavex::request::RequestHead,
+        v1: &pavex_tracing::RootSpan,
+        v2: &app::routes::auth::UserServiceContainer,
     ) -> pavex::Response {
-        let v3 = app::routes::auth::verify_email(v0, v1).await;
+        let v3 = pavex::request::query::QueryParams::extract(v0);
         let v4 = match v3 {
             Ok(ok) => ok,
             Err(v4) => {
                 return {
-                    let v5 = app::errors::api_error2response(&v4);
+                    let v5 = pavex::request::query::errors::ExtractQueryParamsError::into_response(
+                        &v4,
+                    );
                     let v6 = pavex::Error::new(v4);
-                    app::telemetry::error_logger(&v6, v2).await;
+                    app::telemetry::error_logger(&v6, v1).await;
                     <pavex::Response as pavex::IntoResponse>::into_response(v5)
                 };
             }
         };
-        <pavex::Response as pavex::IntoResponse>::into_response(v4)
+        let v5 = app::routes::auth::verify_email(v2, &v4).await;
+        let v6 = match v5 {
+            Ok(ok) => ok,
+            Err(v6) => {
+                return {
+                    let v7 = app::errors::api_error2response(&v6);
+                    let v8 = pavex::Error::new(v6);
+                    app::telemetry::error_logger(&v8, v1).await;
+                    <pavex::Response as pavex::IntoResponse>::into_response(v7)
+                };
+            }
+        };
+        <pavex::Response as pavex::IntoResponse>::into_response(v6)
     }
     async fn post_processing_0(
         v0: pavex::Response,
@@ -1898,16 +1912,16 @@ pub mod route_5 {
         T: std::future::Future<Output = pavex::Response>,
     {
         s_0: pavex_tracing::RootSpan,
-        s_1: &'a app::routes::auth::UserServiceContainer,
-        s_2: &'b pavex::request::RequestHead,
+        s_1: &'a pavex::request::RequestHead,
+        s_2: &'b app::routes::auth::UserServiceContainer,
         s_3: pavex::cookie::ResponseCookies,
         s_4: &'c biscotti::Processor,
         s_5: &'d pavex_session::SessionConfig,
         s_6: &'e pavex_session::SessionStore,
         next: fn(
             pavex_tracing::RootSpan,
-            &'a app::routes::auth::UserServiceContainer,
-            &'b pavex::request::RequestHead,
+            &'a pavex::request::RequestHead,
+            &'b app::routes::auth::UserServiceContainer,
             pavex::cookie::ResponseCookies,
             &'c biscotti::Processor,
             &'d pavex_session::SessionConfig,
@@ -1938,12 +1952,12 @@ pub mod route_5 {
         T: std::future::Future<Output = pavex::Response>,
     {
         s_0: &'a pavex_tracing::RootSpan,
-        s_1: &'b app::routes::auth::UserServiceContainer,
-        s_2: &'c pavex::request::RequestHead,
+        s_1: &'b pavex::request::RequestHead,
+        s_2: &'c app::routes::auth::UserServiceContainer,
         next: fn(
             &'a pavex_tracing::RootSpan,
-            &'b app::routes::auth::UserServiceContainer,
-            &'c pavex::request::RequestHead,
+            &'b pavex::request::RequestHead,
+            &'c app::routes::auth::UserServiceContainer,
         ) -> T,
     }
     impl<'a, 'b, 'c, T> std::future::IntoFuture for Next1<'a, 'b, 'c, T>
