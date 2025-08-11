@@ -88,8 +88,11 @@ impl UserService for UserServiceImpl {
         }
 
         // Check if user is active and verified
-        if !user.is_active || !user.email_verified {
+        if !user.is_active {
             return Err(UserError::InvalidCredentials);
+        }
+        if !user.email_verified {
+            return Err(UserError::EmailNotVerified);
         }
 
         Ok(UserSummary {

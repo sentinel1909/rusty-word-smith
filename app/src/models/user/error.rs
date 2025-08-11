@@ -24,6 +24,9 @@ pub enum UserError {
     #[error("Invalid credentials")]
     InvalidCredentials,
 
+    #[error("Email not verified")]
+    EmailNotVerified,
+
     #[error("Password hashing error: {0}")]
     PasswordHash(String),
 }
@@ -36,7 +39,9 @@ impl IntoApiError for UserError {
             UserError::EmailExists | UserError::UsernameExists => {
                 Some(StatusCode::CONFLICT.as_u16())
             }
-            UserError::InvalidCredentials => Some(StatusCode::UNAUTHORIZED.as_u16()),
+            UserError::InvalidCredentials | UserError::EmailNotVerified => {
+                Some(StatusCode::UNAUTHORIZED.as_u16())
+            }
             UserError::Database(_) | UserError::PasswordHash(_) => {
                 Some(StatusCode::INTERNAL_SERVER_ERROR.as_u16())
             }

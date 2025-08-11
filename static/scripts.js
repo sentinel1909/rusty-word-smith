@@ -31,8 +31,34 @@ onReady(() => {
         if (r.ok) {
           window.location.assign('/admin');
         } else {
-          const t = await r.text();
-          alert('Login failed' + (t ? (': ' + t) : ''));
+          let msg = 'Login failed';
+          const ct = r.headers.get('content-type') || '';
+          try {
+            if (ct.includes('application/json')) {
+              const payload = await r.json();
+              if (payload && typeof payload.message === 'string') {
+                const lower = payload.message.toLowerCase();
+                if (r.status === 401 && lower.includes('email not verified')) {
+                  msg = 'Email not verified. Please check your inbox and verify your email.';
+                  alert(msg);
+                  window.location.assign('/auth/check-email');
+                  return;
+                }
+                if (r.status === 401 && lower.includes('invalid credentials')) {
+                  msg = 'Invalid credentials. Please check your username/email and password.';
+                } else {
+                  msg = payload.message;
+                }
+              }
+            } else {
+              const t = await r.text();
+              if (t) msg = 'Login failed: ' + t;
+            }
+          } catch (_) {
+            // ignore parse errors; fall back to generic message
+          }
+
+          alert(msg);
           // Clear the form after the user dismisses the alert
           form.reset();
           const first = form.querySelector('input[name="username_or_email"]');

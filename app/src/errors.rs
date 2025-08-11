@@ -55,7 +55,9 @@ impl From<&ApiError> for ApiResponse<()> {
                 UserError::EmailExists | UserError::UsernameExists => {
                     (StatusCode::CONFLICT, Status::Error)
                 }
-                UserError::InvalidCredentials => (StatusCode::UNAUTHORIZED, Status::Error),
+                UserError::InvalidCredentials | UserError::EmailNotVerified => {
+                    (StatusCode::UNAUTHORIZED, Status::Error)
+                }
                 // Any other variant is treated as an internal server error.
                 _ => (StatusCode::INTERNAL_SERVER_ERROR, Status::Error),
             },
