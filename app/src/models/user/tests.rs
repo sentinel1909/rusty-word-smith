@@ -42,6 +42,13 @@ mod tests {
             let mut verifications = self.password_verifications.lock().unwrap();
             verifications.insert(user_id, password);
         }
+
+        pub fn mark_email_verified(&self, user_id: Uuid) {
+            let mut users = self.users.lock().unwrap();
+            if let Some(user) = users.get_mut(&user_id) {
+                user.email_verified = true;
+            }
+        }
     }
 
     #[async_trait]
@@ -547,6 +554,7 @@ mod tests {
         let create_request = create_valid_user_request();
         let created_user = repo.create(create_request).await.unwrap();
         repo.set_password_verification(created_user.id, "correct_password".to_string());
+        repo.mark_email_verified(created_user.id);
 
         // Test login
         let login_request = create_valid_login_request();
