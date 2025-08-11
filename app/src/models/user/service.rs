@@ -8,7 +8,9 @@ use super::dto::{
 use super::error::UserError;
 use super::repository::UserRepository;
 use async_trait::async_trait;
-use std::sync::Arc;
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 use uuid::Uuid;
 use validator::Validate;
 
@@ -29,15 +31,23 @@ pub trait UserService: Send + Sync {
         id: Uuid,
         request: ChangePasswordRequest,
     ) -> Result<(), UserError>;
+    // New: email verification related operations
+    async fn set_verification_token(&self, id: Uuid) -> Result<String, UserError>;
+    async fn verify_email(&self, token: &str) -> Result<bool, UserError>;
+    async fn resend_verification(&self, email: &str) -> Result<(), UserError>;
 }
 
 pub struct UserServiceImpl {
     repository: Arc<dyn UserRepository>,
+    resend_tracker: Mutex<HashMap<String, Instant>>, // in-memory rate limiter (per-process)
 }
 
 impl UserServiceImpl {
     pub fn new(repository: Arc<dyn UserRepository>) -> Self {
-        Self { repository }
+        Self {
+            repository,
+            resend_tracker: Mutex::new(HashMap::new()),
+        }
     }
 }
 
@@ -77,8 +87,8 @@ impl UserService for UserServiceImpl {
             return Err(UserError::InvalidCredentials);
         }
 
-        // Check if user is active
-        if !user.is_active {
+        // Check if user is active and verified
+        if !user.is_active || !user.email_verified {
             return Err(UserError::InvalidCredentials);
         }
 
@@ -158,6 +168,48 @@ impl UserService for UserServiceImpl {
             .change_password(id, &request.new_password)
             .await?;
 
+        Ok(())
+    }
+
+    async fn set_verification_token(&self, id: Uuid) -> Result<String, UserError> {
+        let token = Uuid::new_v4().to_string();
+        self.repository
+            .set_email_verification_token(id, token.clone())
+            .await?;
+        Ok(token)
+    }
+
+    async fn verify_email(&self, token: &str) -> Result<bool, UserError> {
+        let user = self.repository.verify_email(token).await?;
+        Ok(user.is_some())
+    }
+
+    async fn resend_verification(&self, email: &str) -> Result<(), UserError> {
+        // In-memory rate-limit: block re-requests within 60 seconds
+        {
+            let mut guard = self
+                .resend_tracker
+                .lock()
+                .expect("resend_tracker mutex poisoned");
+            let key = email.to_lowercase();
+            if let Some(last) = guard.get(&key) {
+                if last.elapsed() < Duration::from_secs(60) {
+                    return Err(UserError::Validation {
+                        message: "Please wait before requesting another verification email".into(),
+                    });
+                }
+            }
+            guard.insert(key, Instant::now());
+        }
+
+        if let Some(user) = self.repository.find_by_email(email).await? {
+            if user.email_verified {
+                return Ok(());
+            }
+            // Always issue a new token on resend
+            let _ = self.set_verification_token(user.id).await?;
+        }
+        // Do not reveal if user exists
         Ok(())
     }
 }

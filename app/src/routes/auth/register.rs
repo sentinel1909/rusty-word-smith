@@ -5,6 +5,7 @@ use super::UserServiceContainer;
 use crate::errors::ApiError;
 use crate::models::{CreateUserRequest, UserResponse};
 use pavex::{get, post, request::body::JsonBody, Response, response::body::Html};
+// no extra imports needed
 use pavex_tera_template::{Context, TemplateEngine};
 
 // handler which will be called when the user visits the register page
@@ -16,6 +17,9 @@ pub async fn register(
     let create_user_request = body.0.clone();
 
     let user_response = user_service.0.register(create_user_request).await?;
+
+    // Generate a verification token via the user service
+    let _token = user_service.0.set_verification_token(user_response.id).await?;
 
     Ok(user_response)
 }

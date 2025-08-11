@@ -76,7 +76,7 @@ onReady(() => {
           body: JSON.stringify(payload),
         });
         if (r.ok) {
-          window.location.assign('/login');
+          window.location.assign('/auth/check-email');
         } else {
           const t = await r.text();
           alert('Registration failed' + (t ? (': ' + t) : ''));
@@ -94,6 +94,31 @@ onReady(() => {
         pwdReg.type = toggleReg.checked ? 'text' : 'password';
       });
     }
+  }
+
+  // Resend verification form
+  const resendForm = document.getElementById('resend-form');
+  if (resendForm) {
+    resendForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      try {
+        const r = await fetch('/auth/resend-verification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: form.email.value })
+        });
+        if (r.ok) {
+          alert('Verification email sent (if the account exists).');
+        } else if (r.status === 429) {
+          alert('Too many requests. Please wait a bit before trying again.');
+        } else {
+          alert('Failed to resend verification email.');
+        }
+      } catch (err) {
+        alert('Network error. Please try again later.');
+      }
+    });
   }
 
   // Logout button handler

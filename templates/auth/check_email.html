@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>Check your email</h1>
+  <p>We sent a verification link to your inbox. Click the link to activate your account.</p>
+  <p>If you didn't receive the email, you can request another verification email.</p>
+  <form id="resend-form">
+    <label>Email
+      <input type="email" name="email" required />
+    </label>
+    <button class="btn" type="submit">Resend verification</button>
+  </form>
+  <p><a href="/login">Back to login</a></p>
+</section>
+{% endblock content %}
+
+

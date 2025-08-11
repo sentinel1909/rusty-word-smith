@@ -12,6 +12,13 @@ async fn admin_can_access_admin_route() {
     let r = app.post_register(&user).await;
     assert!(r.status().is_success(), "register should succeed");
 
+    // Mark as verified to allow login under new policy
+    sqlx::query("UPDATE users SET email_verified = true WHERE username = $1")
+        .bind(&user.username)
+        .execute(&app.api_db_pool)
+        .await
+        .expect("failed to set email_verified");
+
     // Promote to admin directly in DB (pre-login)
     sqlx::query("UPDATE users SET role = 'admin' WHERE username = $1")
         .bind(&user.username)
@@ -65,6 +72,13 @@ async fn non_admin_access_to_admin_returns_403() {
     let user = TestUser::new("bob", "bob@example.com", "P@ssw0rd!", "Bob");
     let r = app.post_register(&user).await;
     assert!(r.status().is_success(), "register should succeed");
+
+    // Mark as verified to allow login under new policy
+    sqlx::query("UPDATE users SET email_verified = true WHERE username = $1")
+        .bind(&user.username)
+        .execute(&app.api_db_pool)
+        .await
+        .expect("failed to set email_verified");
 
     // Login
     let r = app.post_login(&user.username, &user.password).await;

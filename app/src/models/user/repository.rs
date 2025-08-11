@@ -299,7 +299,7 @@ impl UserRepository for SqlxUserRepository {
             "UPDATE users SET email_verification_token = $1, email_verification_expires_at = $2 WHERE id = $3"
         )
         .bind(&token)
-        .bind(expires_at.to_string()) // Convert to string for SQL
+        .bind(SqlxTimestamp::from(expires_at))
         .bind(id)
         .execute(&self.pool)
         .await?;

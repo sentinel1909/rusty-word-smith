@@ -3,13 +3,19 @@
 // modules
 pub mod login;
 pub mod logout;
+pub mod verify;
+pub mod resend;
+pub mod check_email;
 pub mod register;
 pub mod whoami;
 
 // re-exports
 pub use login::*;
 pub use logout::*;
+pub use resend::*;
+pub use check_email::*;
 pub use register::*;
+pub use verify::*;
 pub use whoami::*;
 
 // dependencies

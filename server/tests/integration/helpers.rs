@@ -247,6 +247,33 @@ impl TestApi {
             .expect("Failed to execute /auth/login")
     }
 
+    pub async fn get_verify(&self, token: &str) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/auth/verify?token={}", &self.api_address, token))
+            .send()
+            .await
+            .expect("Failed to execute /auth/verify")
+    }
+
+    pub async fn post_resend_verification(&self, email: &str) -> reqwest::Response {
+        self.api_client
+            .post(format!("{}/auth/resend-verification", &self.api_address))
+            .json(&serde_json::json!({
+                "email": email
+            }))
+            .send()
+            .await
+            .expect("Failed to execute /auth/resend-verification")
+    }
+
+    pub async fn get_check_email_page(&self) -> reqwest::Response {
+        self.api_client
+            .get(format!("{}/auth/check-email", &self.api_address))
+            .send()
+            .await
+            .expect("Failed to execute /auth/check-email")
+    }
+
     pub async fn get_whoami(&self) -> reqwest::Response {
         self.api_client
             .get(format!("{}/auth/whoami", &self.api_address))
